@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>惊鸿一瞥</title>
+    <link>https://cocolight.github.io/</link>
+    <description>欢迎来到我的空间</description>
+    <language>zh-cn</language>
+    <generator>Gridea Pro</generator>
+    <lastBuildDate>Wed, 30 Sep 2026 18:03:48 +0800</lastBuildDate>
+    <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>rtp2httpd 组播</title>
+      <link>https://cocolight.github.io/post/rtp2httpd-zu-bo/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/rtp2httpd-zu-bo/</guid>
+      <pubDate>Thu, 01 Oct 2026 01:49:04 +0800</pubDate>
+      <description><![CDATA[<h2 id="heading">一、设备信息</h2>
+<p>光猫：联通 ZET 吉比特</p>
+<p>软路由：N5105 4LAN 8G 128G immortalwrt 25.12</p>
+<h2 id="heading-1">二、光猫配置</h2>
+<p>光猫默认 LAN3是桥接，不用动</p>
+<h2 id="heading-2">三、软路由配置</h2>
+<p>在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：**将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离&hellip;</p>
+]]></description>
+      <category>iptv</category>
+    </item>
+    <item>
+      <title>GitHub CLI（gh）常用命令清单</title>
+      <link>https://cocolight.github.io/post/gh-cli-ru-men/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/gh-cli-ru-men/</guid>
+      <pubDate>Wed, 30 Sep 2026 05:57:46 +0800</pubDate>
+      <description><![CDATA[<blockquote>
+<p>前提：进入<strong>本地git仓库目录</strong>执行，会自动识别当前仓库；不在仓库可以加 <code>-R 用户名/仓库名</code> 指定仓库</p>
+</blockquote>
+<h2 id="heading">一、账号认证相关（你正在用的）</h2>
+<pre><code>gh --version                 # 查看版本，验证安装
+gh auth login                # 登录（就是刚才执行的）
+gh auth status               # 查...
+</code></pre>
+]]></description>
+      <enclosure url="https://cocolight.github.io/post-images/gh-cli-ru-men.webp" length="0" type="image/webp"></enclosure>
+    </item>
+  </channel>
+</rss>

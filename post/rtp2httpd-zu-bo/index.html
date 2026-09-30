@@ -1,0 +1,303 @@
+<html>
+
+<head>
+    
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content="Gridea Pro 1.3.0-beta.2">
+<title>rtp2httpd 组播 | 惊鸿一瞥</title>
+<link rel="shortcut icon" href="/favicon.ico?v=1790763233">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="rtp2httpd 组播 | 惊鸿一瞥 - Atom Feed" href="/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="iptv" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+<meta name="description" content="一、设备信息 光猫：联通 ZET 吉比特 软路由：N5105 4LAN 8G 128G immortalwrt 25.12 二、光猫配置 光猫默认 LAN3是桥接，不用动 三、软路由配置 在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：**将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离&amp;hellip;">
+<link rel="canonical" href="https://cocolight.github.io/post/rtp2httpd-zu-bo/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"rtp2httpd 组播","url":"https://cocolight.github.io/post/rtp2httpd-zu-bo/","description":"一、设备信息 光猫：联通 ZET 吉比特 软路由：N5105 4LAN 8G 128G immortalwrt 25.12 二、光猫配置 光猫默认 LAN3是桥接，不用动 三、软路由配置 在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：**将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离\u0026hellip;","datePublished":"2026-10-01T01:49:04+08:00","dateModified":"2026-09-30T18:03:48+08:00","author":{"@type":"Person","name":"惊鸿一瞥"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"惊鸿一瞥"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://cocolight.github.io","name":"惊鸿一瞥","position":1},{"@type":"ListItem","item":"https://cocolight.github.io/post/rtp2httpd-zu-bo/","name":"rtp2httpd 组播","position":2}]}</script>
+<meta property="og:title" content="rtp2httpd 组播">
+<meta property="og:description" content="一、设备信息 光猫：联通 ZET 吉比特 软路由：N5105 4LAN 8G 128G immortalwrt 25.12 二、光猫配置 光猫默认 LAN3是桥接，不用动 三、软路由配置 在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：**将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离&amp;hellip;">
+<meta property="og:url" content="https://cocolight.github.io/post/rtp2httpd-zu-bo/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="惊鸿一瞥">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://cocolight.github.io/post/rtp2httpd-zu-bo/">
+<meta name="twitter:title" content="rtp2httpd 组播">
+<meta name="twitter:description" content="一、设备信息 光猫：联通 ZET 吉比特 软路由：N5105 4LAN 8G 128G immortalwrt 25.12 二、光猫配置 光猫默认 LAN3是桥接，不用动 三、软路由配置 在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：**将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离&amp;hellip;">
+<meta name="twitter:image" content="/images/avatar.png">
+</head>
+
+<body>
+    <div class="main">
+        <div class="main-content">
+            
+<div class="site-header">
+    <a href="/">
+        <img class="avatar" src="/images/avatar.png?v=1790763233" alt="">
+    </a>
+    <h1 class="site-title">
+        惊鸿一瞥
+    </h1>
+    <p class="site-description">
+        欢迎来到我的空间
+    </p>
+    <div class="menu-container">
+        
+        
+        <a href="/" class="menu">
+            首页
+        </a>
+        
+        
+        
+        <a href="/post" class="menu">
+            博客
+        </a>
+        
+        
+        
+        <a href="/memos" class="menu">
+            闪念
+        </a>
+        
+        
+        
+        <a href="/archives" class="menu">
+            归档
+        </a>
+        
+        
+        
+        <a href="/tags" class="menu">
+            标签
+        </a>
+        
+        
+        
+        <a href="/links" class="menu">
+            友链
+        </a>
+        
+        
+        
+        <a href="/post/about" class="menu">
+            关于
+        </a>
+        
+        
+    </div>
+    <div class="social-container">
+        
+        
+        
+        
+        
+    </div>
+</div>
+
+            <div class="post-detail">
+                <article class="post">
+                    <h2 class="post-title">
+                        rtp2httpd 组播
+                    </h2>
+                    <div class="post-info">
+                        <span>
+                            2026-10-01
+                        </span>
+                        <span>
+                            5 分钟阅读
+                        </span>
+                        
+                        <a href="/category/iptv/" class="post-tag post-category">
+                            IPTV
+                        </a>
+                        
+                        
+                        <a href="/tag/iptv/" class="post-tag">
+                            # iptv
+                        </a>
+                        
+                    </div>
+                    
+                    <div class="post-content-wrapper">
+                        <div class="post-content" v-pre>
+                            <h2 id="heading">一、设备信息</h2>
+<p>光猫：联通 ZET 吉比特</p>
+<p>软路由：N5105 4LAN 8G 128G immortalwrt 25.12</p>
+<h2 id="heading-1">二、光猫配置</h2>
+<p>光猫默认 LAN3是桥接，不用动</p>
+<h2 id="heading-2">三、软路由配置</h2>
+<p>在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：<strong>将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离标签后，原样转发到指定的 LAN 口</strong>。这个过程在 LuCI 中通过配置“设备（Devices）”和“接口（Interfaces）”来完成。</p>
+<h3 id="gear--iptv--lan-">:gear: 第一步：分离 IPTV 专用 LAN 口</h3>
+<p>首先，需要将你打算连接机顶盒的那个 LAN 口（例如 <code>lan4</code>）从默认的局域网桥<code>br-lan</code>）中独立出来。</p>
+<ol>
+<li>进入 <strong>网络 (Network)</strong> → <strong>接口 (Interfaces)</strong> → <strong>设备 (Devices)</strong> 选项卡。</li>
+<li>在设备列表中找到 <code>br-lan</code>，点击其右侧的 <strong>配置 (Configure)</strong> 按钮。</li>
+<li>在 <strong>网桥端口 (Bridge ports)</strong> 列表中，<strong>取消勾选</strong>你计划用于连接机顶盒的 LAN 口（如 <code>lan4</code>）。</li>
+<li>点击 <strong>保存 (Save)</strong>。此时该 LAN 口的网络会中断，这是正常现象。</li>
+</ol>
+<h3 id="electric-plug--vlan-46-">:electric_plug: 第二步：创建 VLAN 46 虚拟设备</h3>
+<p>这一步是让路由器能够识别并处理光猫传来的、带有 VLAN 46 标签的 IPTV 数据。</p>
+<ol>
+<li>仍在 <strong>设备 (Devices)</strong> 页面，点击 <strong>添加设备配置 (Add device configuration)</strong> 按钮。</li>
+<li>进行如下设置：</li>
+</ol>
+<ul>
+<li><strong>设备类型 (Device type)</strong>：选择 <strong>VLAN (802.1q)</strong>。</li>
+<li><strong>基础设备 (Base device)</strong>：选择你的 <strong>WAN 口物理名称</strong>（你之前提到是 <code>eth1</code>）。</li>
+<li><strong>VLAN ID</strong>：填写 <strong>46</strong>（这是你光猫中 <code>3_IPTV_B_VID_46</code> 的 VLAN ID）。</li>
+</ul>
+<ol start="3">
+<li>点击 <strong>保存 (Save)</strong>。列表中将出现一个名为 <code>eth1.46</code> 的新设备。</li>
+</ol>
+<h3 id="bridge-at-night--iptv-">:bridge_at_night: 第三步：创建 IPTV 桥接设备</h3>
+<p>现在，需要创建一个桥接设备，将“来自 WAN 口的 VLAN 46 数据”和“连接机顶盒的物理 LAN 口”桥接在一起。</p>
+<ol>
+<li>再次点击 <strong>添加设备配置 (Add device configuration)</strong> 按钮。</li>
+<li>进行如下设置：</li>
+</ol>
+<ul>
+<li><strong>设备类型 (Device type)</strong>：选择 <strong>网桥设备 (Bridge device)</strong>。</li>
+<li><strong>设备名称 (Device name)</strong>：填写一个易于识别的名称，例如 *<code>br-iptv</code>**。</li>
+<li><strong>网桥端口 (Bridge ports)</strong>：同时勾选以下两个选项：
+<ul>
+<li><code>eth1.46</code>（你在第二步创建的 VLAN 虚拟设备）</li>
+<li><code>lan4</code>（你在第一步中释放的物理 LAN 口）</li>
+</ul>
+</li>
+<li><strong>网桥选项 (Bridge options)</strong>：建议勾选 <strong>启用 IGMP 嗅探 (Enable IGMP snooping)</strong>，这有助于优化组播流量，防止网络风暴。</li>
+</ul>
+<ol start="3">
+<li>点击 <strong>保存 (Save)</strong>。</li>
+</ol>
+<h3 id="satellite-antenna--iptv-">:satellite_antenna: 第四步：创建 IPTV 网络接口</h3>
+<p>为了让路由器系统能够管理这个新的桥接设备，需要为它创建一个接口。</p>
+<ol>
+<li>进入 <strong>网络 (Network)</strong> → <strong>接口 (Interfaces)</strong> 页面。</li>
+<li>点击 <strong>添加新接口 (Add new interface)</strong> 按钮。</li>
+<li>进行如下设置：</li>
+</ol>
+<ul>
+<li><strong>名称 (Name)</strong>：填写 <code>IPTV</code>。</li>
+<li><strong>协议 (Protocol)</strong>：选择 <strong>不配置协议 (Unmanaged)</strong> 或 <strong>不配置协议 (None)</strong>。</li>
+<li><strong>设备 (Device)</strong>：从下拉菜单中选择你刚创建的 <code>br-iptv</code>。</li>
+</ul>
+<ol start="4">
+<li>在 <strong>防火墙设置 (Firewall Settings)</strong> 选项卡中，<strong>新建一个防火墙区域</strong>，例如命名为 <code>iptv</code>。</li>
+<li>点击 <strong>创建接口 (Create interface)</strong>。</li>
+</ol>
+<h3 id="shield-">:shield: 第五步：配置防火墙规则</h3>
+<p>最后，需要调整防火墙规则，允许 IPTV 数据在新建的区域内自由流通。</p>
+<ol>
+<li>进入 <strong>网络 (Network)</strong> → <strong>防火墙 (Firewall)</strong> 页面。</li>
+<li>在 <strong>常规设置 (General Settings)</strong> 区域，找到你刚创建的 <em><code>iptv</code></em>* 区域，点击 <strong>编辑 (Edit)</strong>。</li>
+<li>将 <strong>入站数据 (Input)</strong>、<strong>出站数据 (Output)</strong> 和 <strong>转发 (Forward)</strong> 全部设置为 <strong>接受 (ACCEPT)</strong>。</li>
+<li>点击 <strong>保存并应用 (Save &amp; Apply)</strong>。</li>
+</ol>
+<h3 id="bulb--igmp-">:bulb: 可选：配置 IGMP 代理（如需组播转单播）</h3>
+<p>如果你的机顶盒需要获取组播流，还需要安装并配置 rtp2httpd 插件。然后在 LuCI 的“服务”菜单下进行配置，将 IPTV 接口设置为源接口。</p>
+<p>完成以上步骤后，将机顶盒连接到路由器指定的 LAN 口，它应该就能像直接接在光猫上一样工作了。</p>
+<h2 id="rtp2httpd-">四、rtp2httpd 配置</h2>
+<p><a href="https://rtp2httpd.com/reference/related-resources">https://rtp2httpd.com/reference/related-resources</a></p>
+<img src="/post-images/1790762569515107000.png" alt="" width="754">
+<img src="/post-images/1790762580264905800.png" alt="" width="745">
+<h2 id="heading-3">五、直播源</h2>
+<h3 id="heading-4">直播源获取</h3>
+<ul>
+<li><a href="https://github.com/xisohi/CHINA-IPTV">https://github.com/xisohi/CHINA-IPTV</a></li>
+<li><a href="https://github.com/imDazui/Tvlist-awesome-m3u-m3u8">https://github.com/imDazui/Tvlist-awesome-m3u-m3u8</a></li>
+<li><a href="https://github.com/suzukua/epg">https://github.com/suzukua/epg</a></li>
+</ul>
+<h3 id="heading-5">工具</h3>
+<ul>
+<li><a href="https://chinaiptv.pages.dev/sort_channels">https://chinaiptv.pages.dev/sort_channels</a></li>
+<li><a href="https://chinaiptv.pages.dev/m3u_to_txt">https://chinaiptv.pages.dev/m3u_to_txt</a></li>
+<li><a href="https://chinaiptv.pages.dev/zbjx">https://chinaiptv.pages.dev/zbjx</a></li>
+<li><a href="https://github.com/yuanzl77/IPTV">https://github.com/yuanzl77/IPTV</a></li>
+<li><a href="https://github.com/zhimin-dev/iptv-checker">https://github.com/zhimin-dev/iptv-checker</a></li>
+</ul>
+
+                        </div>
+                        <div class="toc-container">
+                            
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            
+            <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="/post/gh-cli-ru-men/">
+                    <h3 class="post-title">
+                        GitHub CLI（gh）常用命令清单
+                    </h3>
+                </a>
+            </div>
+            
+
+            
+
+            
+<div class="site-footer">
+    Powered by Gridea Pro
+    <a class="rss" href="/atom.xml" target="_blank">
+        <i class="ri-rss-line"></i> RSS
+    </a>
+</div>
+
+        </div>
+    </div>
+
+    <script>
+        hljs.initHighlightingOnLoad()
+
+        let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+        
+        
+        
+        
+        
+        
+        
+        
+
+        window.addEventListener("scroll", event => {
+            let fromTop = window.scrollY;
+
+            mainNavLinks.forEach((link, index) => {
+                let section = document.getElementById(decodeURI(link.hash).substring(1));
+                let nextSection = null
+                if (mainNavLinks[index + 1]) {
+                    nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+                }
+                if (section.offsetTop <= fromTop) {
+                    if (nextSection) {
+                        if (nextSection.offsetTop > fromTop) {
+                            link.classList.add("current");
+                        } else {
+                            link.classList.remove("current");
+                        }
+                    } else {
+                        link.classList.add("current");
+                    }
+                } else {
+                    link.classList.remove("current");
+                }
+            });
+        });
+
+    </script>
+<script>console.log("\n%c ✦ Gridea Pro v1.3.0-beta.2 %c · Theme: inotes v1.0.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+
+</html>

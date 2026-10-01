@@ -6,8 +6,18 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Wed, 30 Sep 2026 18:03:48 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 21:31:56 +0800</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>AdGuard配置</title>
+      <link>https://cocolight.github.io/post/adguardpei-zhi/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/adguardpei-zhi/</guid>
+      <pubDate>Fri, 02 Oct 2026 05:05:24 +0800</pubDate>
+      <description><![CDATA[<p>LUCI 界面无法正常显示，本文详细描述了访问路由器 IP:3000 后的界面问题，并展示了多张截图。对于遇到类似问题的用户，文章提供了有价值的参考和帮助。</p>
+]]></description>
+      <category>Aadguard</category>
+      <category>immortalwrt</category>
+    </item>
     <item>
       <title>rtp2httpd 组播</title>
       <link>https://cocolight.github.io/post/rtp2httpd-zu-bo/</link>

@@ -47,6 +47,8 @@ gh auth login                # 登录（就是刚才执行的）
 gh auth status               # 查...
 </code></pre>
 ]]></description>
+      <category>github</category>
+      <category>git</category>
       <enclosure url="https://cocolight.github.io/post-images/gh-cli-ru-men.webp" length="0" type="image/webp"></enclosure>
     </item>
   </channel>

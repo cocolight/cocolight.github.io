@@ -6,8 +6,19 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Thu, 01 Oct 2026 21:31:56 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 18:26:41 +0800</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>immortalwrt 25.12 安装 Podman</title>
+      <link>https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/</guid>
+      <pubDate>Sat, 03 Oct 2026 02:20:52 +0800</pubDate>
+      <description><![CDATA[<p>本文提供了在 ImmortalWrt LuCI 界面配置 IPTV-API 容器的详细步骤，涵盖镜像选择、网络设置、持久化存储、端口映射、环境变量配置等关键点，并提醒架构兼容性、存储路径调整等注意事项，帮助用户顺利部署并优化资源占用，实现高效直播源生成。</p>
+]]></description>
+      <category>iptv</category>
+      <category>podman</category>
+      <category>immortalwrt</category>
+    </item>
     <item>
       <title>AdGuard配置</title>
       <link>https://cocolight.github.io/post/adguardpei-zhi/</link>

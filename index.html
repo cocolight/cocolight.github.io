@@ -282,6 +282,22 @@
     
     ,{
       "@type": "BlogPosting",
+      "title": "Podman 固化容器",
+      "description": "修复：把存储根挪到持久分区
+编辑 /etc/containers/storage.conf（这个文件在 /etc 下，本身是持久的）：
+[storage]
+driver = &amp;quot;overlay&amp;quot;
+graphroot = &amp;quot;/overlay/podman/storage&amp;quot;
+runroot  = &amp;quot;/over......",
+      "keywords": "immortalwrt, podman",
+      "url": "/post/podman-gu-hua-rong-qi/"
+      
+      ,"published": "2026-10-03T03:05:39+08:00",
+      "author": "惊鸿一瞥"
+    }
+    
+    ,{
+      "@type": "BlogPosting",
       "title": "immortalwrt 25.12 安装 Podman",
       "description": "本文提供了在 ImmortalWrt LuCI 界面配置 IPTV-API 容器的详细步骤，涵盖镜像选择、网络设置、持久化存储、端口映射、环境变量配置等关键点，并提醒架构兼容性、存储路径调整等注意事项，帮助用户顺利部署并优化资源占用，实现高效直播源生成。...",
       "keywords": "iptv, podman, immortalwrt",

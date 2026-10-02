@@ -6,8 +6,26 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Fri, 02 Oct 2026 18:26:41 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 19:09:38 +0800</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>Podman 固化容器</title>
+      <link>https://cocolight.github.io/post/podman-gu-hua-rong-qi/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/podman-gu-hua-rong-qi/</guid>
+      <pubDate>Sat, 03 Oct 2026 03:05:39 +0800</pubDate>
+      <description><![CDATA[<h3 id="heading">修复：把存储根挪到持久分区</h3>
+<p>编辑 <code>/etc/containers/storage.conf</code>（这个文件在 <code>/etc</code> 下，本身是持久的）：</p>
+<pre><code class="language-ini">[storage]
+driver = &quot;overlay&quot;
+graphroot = &quot;/overlay/podman/storage&quot;
+runroot  = &quot;/overlay/podman/run&quot;
+
+</code></pre>
+<p>然后重新拉取并创建&hellip;</p>
+]]></description>
+      <category>immortalwrt</category>
+      <category>podman</category>
+    </item>
     <item>
       <title>immortalwrt 25.12 安装 Podman</title>
       <link>https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/</link>

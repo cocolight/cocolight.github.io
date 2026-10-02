@@ -250,7 +250,7 @@
     
 <meta name="description" content="本文提供了在 ImmortalWrt LuCI 界面配置 IPTV-API 容器的详细步骤，涵盖镜像选择、网络设置、持久化存储、端口映射、环境变量配置等关键点，并提醒架构兼容性、存储路径调整等注意事项，帮助用户顺利部署并优化资源占用，实现高效直播源生成。">
 <link rel="canonical" href="https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"immortalwrt 25.12 安装 Podman","url":"https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/","description":"本文提供了在 ImmortalWrt LuCI 界面配置 IPTV-API 容器的详细步骤，涵盖镜像选择、网络设置、持久化存储、端口映射、环境变量配置等关键点，并提醒架构兼容性、存储路径调整等注意事项，帮助用户顺利部署并优化资源占用，实现高效直播源生成。","datePublished":"2026-10-03T02:20:52+08:00","dateModified":"2026-10-02T18:26:41+08:00","author":{"@type":"Person","name":"惊鸿一瞥"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"惊鸿一瞥"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"immortalwrt 25.12 安装 Podman","url":"https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/","description":"本文提供了在 ImmortalWrt LuCI 界面配置 IPTV-API 容器的详细步骤，涵盖镜像选择、网络设置、持久化存储、端口映射、环境变量配置等关键点，并提醒架构兼容性、存储路径调整等注意事项，帮助用户顺利部署并优化资源占用，实现高效直播源生成。","datePublished":"2026-10-03T02:20:52+08:00","dateModified":"2026-10-02T18:51:36+08:00","author":{"@type":"Person","name":"惊鸿一瞥"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"惊鸿一瞥"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://cocolight.github.io","name":"惊鸿一瞥","position":1},{"@type":"ListItem","item":"https://cocolight.github.io/post/immortalwrt-2512-an-zhuang-podman/","name":"immortalwrt 25.12 安装 Podman","position":2}]}</script>
 <meta property="og:title" content="immortalwrt 25.12 安装 Podman">
 <meta property="og:description" content="本文提供了在 ImmortalWrt LuCI 界面配置 IPTV-API 容器的详细步骤，涵盖镜像选择、网络设置、持久化存储、端口映射、环境变量配置等关键点，并提醒架构兼容性、存储路径调整等注意事项，帮助用户顺利部署并优化资源占用，实现高效直播源生成。">
@@ -439,7 +439,7 @@
 </ul>
 <h4 id="heading-1">存储配置</h4>
 <ul>
-<li><strong>卷</strong>：这是保证数据不丢失的关键。需要挂载两个目录：</li>
+<li><strong>卷</strong>：需要手动进ssh先创建。需要挂载两个目录：</li>
 <li><code>/overlay/podman/volumes/iptv-api/config:/iptv-api/config</code>：用于保存频道模板、配置文件等。</li>
 <li><code>/overlay/podman/volumes/iptv-api/output:/iptv-api/output</code>：用于保存生成的直播源结果文件。</li>
 <li><strong>注意</strong>：路径请根据你之前设置的实际 <code>graphroot</code> 进行调整。如果你把 <code>graphroot</code> 设在了 USB 存储上，这里也要相应修改。</li>

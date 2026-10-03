@@ -30,21 +30,6 @@
       <category>immortalwrt</category>
     </item>
     <item>
-      <title>rtp2httpd 组播</title>
-      <link>https://cocolight.github.io/post/rtp2httpd-zu-bo/</link>
-      <guid isPermaLink="true">https://cocolight.github.io/post/rtp2httpd-zu-bo/</guid>
-      <pubDate>Thu, 01 Oct 2026 01:49:04 +0800</pubDate>
-      <description><![CDATA[<h2 id="heading">一、设备信息</h2>
-<p>光猫：联通 ZET 吉比特</p>
-<p>软路由：N5105 4LAN 8G 128G immortalwrt 25.12</p>
-<h2 id="heading-1">二、光猫配置</h2>
-<p>光猫默认 LAN3是桥接，不用动</p>
-<h2 id="heading-2">三、软路由配置</h2>
-<p>在 ImmortalWrt V25.12 的 LuCI 界面中，配置 IPTV 透传的核心逻辑是：**将路由器的 WAN 口接收到的、带 VLAN 46 标签的 IPTV 数据，剥离&hellip;</p>
-]]></description>
-      <category>iptv</category>
-    </item>
-    <item>
       <title>GitHub CLI（gh）常用命令清单</title>
       <link>https://cocolight.github.io/post/gh-cli-ru-men/</link>
       <guid isPermaLink="true">https://cocolight.github.io/post/gh-cli-ru-men/</guid>

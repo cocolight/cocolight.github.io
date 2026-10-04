@@ -1,0 +1,2387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+<meta name="viewport"
+    content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, width=device-width" />
+<meta name="renderer" content="webkit">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
+
+
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#292a2d" media="(prefers-color-scheme: dark)">
+
+
+<link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/cocolight/cocolight.github.io@master/media/images/favicon.ico">
+<link rel="stylesheet" href="/styles/main.min.css">
+
+
+<style>:root{--accent-color:#28df99;}</style>
+
+
+<script>
+    // 自动为所有 target="_blank" 的链接添加 rel="noopener noreferrer"
+    document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('a[target="_blank"]');
+        links.forEach(function (link) {
+            var rel = link.getAttribute('rel') || '';
+            if (rel.indexOf('noopener') === -1) {
+                rel += ' noopener';
+            }
+            if (rel.indexOf('noreferrer') === -1) {
+                rel += ' noreferrer';
+            }
+            link.setAttribute('rel', rel.trim());
+        });
+    });
+</script>
+
+<script>
+    // declaraction of document.ready() function.
+    (function () {
+        var ie = !!(window.attachEvent && !window.opera);
+        var wk = /webkit\/(\d+)/i.test(navigator.userAgent) && (RegExp.$1 < 525);
+        var fn = [];
+        var run = function () {
+            for (var i = 0; i < fn.length; i++) fn[i]();
+        };
+        var d = document;
+        d.ready = function (f) {
+            if (!ie && !wk && d.addEventListener)
+                return d.addEventListener('DOMContentLoaded', f, false);
+            if (fn.push(f) > 1) return;
+            if (ie)
+                (function () {
+                    try {
+                        d.documentElement.doScroll('left');
+                        run();
+                    } catch (err) {
+                        setTimeout(arguments.callee, 0);
+                    }
+                })();
+            else if (wk)
+                var t = setInterval(function () {
+                    if (/^(loaded|complete)$/.test(d.readyState))
+                        clearInterval(t), run();
+                }, 0);
+        };
+    })();
+
+
+    document.ready(
+        function () {
+            var _Blog = window._Blog || {};
+
+            const getSystemTheme = () => {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return 'dark';
+                }
+                return 'light';
+            };
+
+            const configDefault = 'dark';
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+            const initialTheme = currentTheme || configDefault || getSystemTheme();
+            const isDark = initialTheme === 'dark';
+
+            const updateButtons = (dark) => {
+                const sunBtn = document.getElementById("theme-toggle-sun");
+                const moonBtn = document.getElementById("theme-toggle-moon");
+                const mobileSunBtn = document.getElementById("mobile-theme-toggle-sun");
+                const mobileMoonBtn = document.getElementById("mobile-theme-toggle-moon");
+
+                if (dark) {
+                    if (sunBtn) sunBtn.style.display = 'none';
+                    if (moonBtn) moonBtn.style.display = 'inline-block';
+                    if (mobileSunBtn) mobileSunBtn.style.display = 'none';
+                    if (mobileMoonBtn) mobileMoonBtn.style.display = 'inline-block';
+                } else {
+                    if (sunBtn) sunBtn.style.display = 'inline-block';
+                    if (moonBtn) moonBtn.style.display = 'none';
+                    if (mobileSunBtn) mobileSunBtn.style.display = 'inline-block';
+                    if (mobileMoonBtn) mobileMoonBtn.style.display = 'none';
+                }
+            };
+
+            const updateThemeColor = (dark) => {
+                const themeColor = dark ? '#292a2d' : '#ffffff';
+                const metaTags = document.querySelectorAll('meta[name="theme-color"]');
+                if (metaTags.length > 0) {
+                    // 保留第一个，移除其他的，避免重复
+                    for (let i = 1; i < metaTags.length; i++) {
+                        metaTags[i].remove();
+                    }
+                    metaTags[0].setAttribute('content', themeColor);
+                    metaTags[0].removeAttribute('media');
+                } else {
+                    const meta = document.createElement('meta');
+                    meta.name = 'theme-color';
+                    meta.content = themeColor;
+                    document.head.appendChild(meta);
+                }
+            };
+
+            const applyTheme = (dark) => {
+                const body = document.getElementsByTagName('body')[0];
+                if (dark) {
+                    body.classList.add('dark-theme');
+                } else {
+                    body.classList.remove('dark-theme');
+                }
+                updateButtons(dark);
+                updateThemeColor(dark);
+            };
+
+            // Initial application
+            applyTheme(isDark);
+            if (!currentTheme) {
+                window.localStorage && window.localStorage.setItem('theme', initialTheme);
+            }
+
+            _Blog.toggleTheme = function () {
+                const toggleFunc = (e) => {
+                    // Prevent bubbling if needed, though buttons are distinct now
+                    if (e) e.stopPropagation();
+
+                    const body = document.getElementsByTagName('body')[0];
+                    const isCurrentlyDark = body.classList.contains('dark-theme');
+
+                    if (isCurrentlyDark) {
+                        body.classList.remove('dark-theme');
+                        updateButtons(false);
+                        window.localStorage && window.localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.add('dark-theme');
+                        updateButtons(true);
+                        window.localStorage && window.localStorage.setItem('theme', 'dark');
+                    }
+                };
+
+                const sunBtn = document.getElementById("theme-toggle-sun");
+                const moonBtn = document.getElementById("theme-toggle-moon");
+                const mobileSunBtn = document.getElementById("mobile-theme-toggle-sun");
+                const mobileMoonBtn = document.getElementById("mobile-theme-toggle-moon");
+
+                if (sunBtn) sunBtn.addEventListener('click', toggleFunc);
+                if (moonBtn) moonBtn.addEventListener('click', toggleFunc);
+                if (mobileSunBtn) mobileSunBtn.addEventListener('click', toggleFunc);
+                if (mobileMoonBtn) mobileMoonBtn.addEventListener('click', toggleFunc);
+            };
+            _Blog.toggleTheme();
+
+            if (window.matchMedia && !configDefault) {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                    const newTheme = e.matches ? 'dark' : 'light';
+                    applyTheme(e.matches);
+                    window.localStorage && window.localStorage.setItem('theme', newTheme);
+                });
+            }
+        }
+    );
+</script>
+
+<script>
+    // Reading Progress Component
+    document.addEventListener('DOMContentLoaded', () => {
+        const progressValue = document.querySelector('.reading-value');
+        const progressCircle = document.querySelector('.progress-ring__circle');
+        const container = document.querySelector('.reading-progress-container');
+
+        // Exit if elements don't exist (e.g., not on a post page)
+        if (!progressValue || !progressCircle || !container) {
+            return;
+        }
+
+        // SVG Circle setup
+        const radius = progressCircle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const safePercent = Math.min(100, Math.max(0, percent));
+            progressValue.textContent = `${Math.round(safePercent)}%`;
+            const offset = circumference - (safePercent / 100) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        function onScroll() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+            if (scrollHeight <= 0) {
+                setProgress(0);
+                return;
+            }
+
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            setProgress(scrollPercent);
+
+            // Show/Hide logic: Show if scrolled more than 100px
+            if (scrollTop > 100) {
+                container.classList.add('show');
+            } else {
+                container.classList.remove('show');
+            }
+        }
+
+        // Initialize
+        onScroll();
+
+        // Listen for scroll events
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // Recalculate on resize
+        window.addEventListener('resize', onScroll);
+    });
+</script>
+
+
+
+
+
+
+
+    <meta name="generator" content="Gridea Pro 1.3.0-beta.2">
+    <title>IPTV 机顶盒流量抓取与分析 —— 专业笔记 | 惊鸿一瞥</title>
+
+    
+<meta name="description" content="面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线， 把可复用的方法论与项目专属细节分开陈述。 实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。 文中凭据、令牌、账号已脱敏。 :copyright: 2026 cocolight 一、目标与验收标准 1.1 目标 **从&amp;hellip;">
+<link rel="canonical" href="https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"IPTV 机顶盒流量抓取与分析 —— 专业笔记","url":"https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/","description":"面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线， 把可复用的方法论与项目专属细节分开陈述。 实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。 文中凭据、令牌、账号已脱敏。 :copyright: 2026 cocolight 一、目标与验收标准 1.1 目标 **从\u0026hellip;","datePublished":"2026-10-05T03:01:04+08:00","dateModified":"2026-10-04T19:02:29+08:00","author":{"@type":"Person","name":"惊鸿一瞥"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"惊鸿一瞥"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://cocolight.github.io","name":"惊鸿一瞥","position":1},{"@type":"ListItem","item":"https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/","name":"IPTV 机顶盒流量抓取与分析 —— 专业笔记","position":2}]}</script>
+<meta property="og:title" content="IPTV 机顶盒流量抓取与分析 —— 专业笔记">
+<meta property="og:description" content="面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线， 把可复用的方法论与项目专属细节分开陈述。 实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。 文中凭据、令牌、账号已脱敏。 :copyright: 2026 cocolight 一、目标与验收标准 1.1 目标 **从&amp;hellip;">
+<meta property="og:url" content="https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="惊鸿一瞥">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/">
+<meta name="twitter:title" content="IPTV 机顶盒流量抓取与分析 —— 专业笔记">
+<meta name="twitter:description" content="面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线， 把可复用的方法论与项目专属细节分开陈述。 实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。 文中凭据、令牌、账号已脱敏。 :copyright: 2026 cocolight 一、目标与验收标准 1.1 目标 **从&amp;hellip;">
+<meta name="twitter:image" content="/images/avatar.png">
+</head>
+
+<body class="">
+
+    
+<script>
+    (function () {
+        const getSystemTheme = () => {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
+        };
+
+        const configDefault = 'dark';
+        const savedTheme = localStorage.getItem('theme');
+        const theme = savedTheme || configDefault || getSystemTheme();
+
+        if (theme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        if (!savedTheme) {
+            localStorage.setItem('theme', theme);
+        }
+    })();
+</script>
+<header class="mod-head">
+    <div class="mod-head__left">
+        <div class="mod-head__logo">
+            <a href="/">
+                
+                <img class="avatar" alt="avatar" src="https://cdn.jsdelivr.net/gh/cocolight/cocolight.github.io@master/images/avatar.png">
+                
+            </a>
+        </div>
+    </div>
+
+    <div class="mod-head__right">
+        <span>
+            <button id="theme-toggle-sun" class="tiptap-button theme-toggle-sun" aria-label="Switch to dark mode">
+                <svg width="18" height="18" class="tiptap-button-icon" viewBox="0 0 24 24" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 1C12.5523 1 13 1.44772 13 2V4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4V2C11 1.44772 11.4477 1 12 1Z"
+                        fill="currentColor"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M13 20C13 19.4477 12.5523 19 12 19C11.4477 19 11 19.4477 11 20V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V20Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M4.22282 4.22289C4.61335 3.83236 5.24651 3.83236 5.63704 4.22289L7.04704 5.63289C7.43756 6.02341 7.43756 6.65658 7.04704 7.0471C6.65651 7.43762 6.02335 7.43762 5.63283 7.0471L4.22282 5.6371C3.8323 5.24658 3.8323 4.61341 4.22282 4.22289Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M18.367 16.9529C17.9765 16.5623 17.3433 16.5623 16.9528 16.9529C16.5623 17.3434 16.5623 17.9766 16.9528 18.3671L18.3628 19.7771C18.7533 20.1676 19.3865 20.1676 19.777 19.7771C20.1675 19.3866 20.1675 18.7534 19.777 18.3629L18.367 16.9529Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M1 12C1 11.4477 1.44772 11 2 11H4C4.55228 11 5 11.4477 5 12C5 12.5523 4.55228 13 4 13H2C1.44772 13 1 12.5523 1 12Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M20 11C19.4477 11 19 11.4477 19 12C19 12.5523 19.4477 13 20 13H22C22.5523 13 23 12.5523 23 12C23 11.4477 22.5523 11 22 11H20Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M7.04704 16.9529C7.43756 17.3434 7.43756 17.9766 7.04704 18.3671L5.63704 19.7771C5.24651 20.1676 4.61335 20.1676 4.22282 19.7771C3.8323 19.3866 3.8323 18.7534 4.22283 18.3629L5.63283 16.9529C6.02335 16.5623 6.65651 16.5623 7.04704 16.9529Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M19.777 5.6371C20.1675 5.24657 20.1675 4.61341 19.777 4.22289C19.3865 3.83236 18.7533 3.83236 18.3628 4.22289L16.9528 5.63289C16.5623 6.02341 16.5623 6.65658 16.9528 7.0471C17.3433 7.43762 17.9765 7.43762 18.367 7.0471L19.777 5.6371Z"
+                        fill="currentColor"></path>
+                </svg>
+            </button>
+            <button id="theme-toggle-moon" class="tiptap-button theme-toggle-moon" aria-label="Switch to light mode">
+                <svg width="18" height="18" class="tiptap-button-icon" viewBox="0 0 24 24" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M12 2C10.0222 2 8.08879 2.58649 6.4443 3.6853C4.79981 4.78412 3.51809 6.3459 2.76121 8.17317C2.00433 10.0004 1.8063 12.0111 2.19215 13.9509C2.578 15.8907 3.53041 17.6725 4.92894 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 11.5955 21.7564 11.2309 21.3827 11.0761C21.009 10.9213 20.5789 11.0069 20.2929 11.2929C19.287 12.2988 17.9226 12.864 16.5 12.864C15.0774 12.864 13.713 12.2988 12.7071 11.2929C11.7012 10.287 11.136 8.92261 11.136 7.5C11.136 6.07739 11.7012 4.71304 12.7071 3.70711C12.9931 3.42111 13.0787 2.99099 12.9239 2.61732C12.7691 2.24364 12.4045 2 12 2ZM7.55544 5.34824C8.27036 4.87055 9.05353 4.51389 9.87357 4.28778C9.39271 5.27979 9.13604 6.37666 9.13604 7.5C9.13604 9.45304 9.91189 11.3261 11.2929 12.7071C12.6739 14.0881 14.547 14.864 16.5 14.864C17.6233 14.864 18.7202 14.6073 19.7122 14.1264C19.4861 14.9465 19.1295 15.7296 18.6518 16.4446C17.7727 17.7602 16.5233 18.7855 15.0615 19.391C13.5997 19.9965 11.9911 20.155 10.4393 19.8463C8.88743 19.5376 7.46197 18.7757 6.34315 17.6569C5.21447 16.538 4.4624 15.1126 4.15372 13.5607C3.84504 12.0089 4.00347 10.4003 4.60897 8.93853C5.21447 7.47672 6.23985 6.22729 7.55544 5.34824Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z"
+                        fill="currentColor"></path>
+                </svg>
+            </button>
+        </span>
+    </div>
+</header>
+<!-- <a href="#" id="back-to-top" style="display: inline;"> ^ </a> -->
+
+<article class="mod-post mod-post__type-post">
+    <header>
+        <h1 class="mod-post__title">
+            IPTV 机顶盒流量抓取与分析 —— 专业笔记
+        </h1>
+    </header>
+
+    <div class="mod-post__meta">
+        <time datetime="2026-10-05">
+            2026-10-05
+        </time> • 54 分钟阅读 •
+        
+        <a href="/category/iptv/" class="mod-post__category">
+            IPTV
+        </a>
+        
+        
+         • 
+        
+        <a href="/tag/iptv/">
+            iptv
+        </a>
+         ·  
+        <a href="/tag/immortalwrt/">
+            immortalwrt
+        </a>
+          </div>
+
+
+
+            <div class="mod-post__entry wzulli">
+                
+                <blockquote>
+<p>面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线，<br />
+把可复用的方法论与项目专属细节分开陈述。</p>
+<p>实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。<br />
+文中凭据、令牌、账号已脱敏。</p>
+<p>:copyright: 2026 cocolight</p>
+</blockquote>
+<hr />
+<h2 id="heading"><strong>一、目标与验收标准</strong></h2>
+<h3 id="11-"><strong>1.1 目标</strong></h3>
+<p><strong>从机顶盒与运营商平台的网络交互中，提取“频道名</strong> :left_right_arrow: <strong>播放地址”的完整映射，并生成播放器可直接使用的播放列表。</strong></p>
+<p>拆解为三层可验证的子目标：</p>
+<table>
+<thead>
+<tr>
+<th><strong>层</strong></th>
+<th><strong>要拿到的东西</strong></th>
+<th><strong>为什么</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>认证层</td>
+<td>机顶盒如何通过运营商认证（账号 / 令牌 / 会话）</td>
+<td>没有有效会话，服务器不下发频道表</td>
+</tr>
+<tr>
+<td>数据层</td>
+<td>频道表原始响应体（含每个频道的 ID、名称、播放地址）</td>
+<td>这是唯一的信息源</td>
+</tr>
+<tr>
+<td>交付层</td>
+<td>播放列表（m3u8）与结构化清单（CSV）</td>
+<td>最终可用产物</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意“目标”与“结果”的区别</strong>。目标只描述“要抓什么类型的流量、要得到什么结构的数据”，<br />
+不预设在频道数量。频道数与具体频道名是<strong>执行结果</strong>，写在第五章。</p>
+</blockquote>
+<h3 id="12-"><strong>1.2 验收标准</strong></h3>
+<p>一条链、五个环节，<strong>每一环都有可执行的判据</strong>。任何一环不达标，最终产物就不可信。</p>
+<table>
+<thead>
+<tr>
+<th><strong>#</strong></th>
+<th><strong>环节</strong></th>
+<th><strong>验收动作</strong></th>
+<th><strong>通过判据</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>链路串通</td>
+<td><code>brctl showmacs &lt;bridge&gt;</code>（或交换机 SPAN 配置）</td>
+<td>桥两条腿<strong>都学到 MAC</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>抓包有效</td>
+<td><code>capinfos X.pcap</code> + 源 MAC 分布统计</td>
+<td>包数/时长合理，<strong>目标设备 MAC 出现次数 &gt; 0</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>会话完整</td>
+<td><code>tshark -Y &quot;http.request&quot;</code> 列全部 HTTP 请求</td>
+<td>认证链<strong>全部 200</strong>，<code>isSucessed=true</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>数据到达</td>
+<td>检查频道接口响应体</td>
+<td><code>ChannelCount</code> <strong>非 0</strong>，且能搜到频道条目</td>
+</tr>
+<tr>
+<td>5</td>
+<td>产物正确</td>
+<td>用解析脚本端到端复跑</td>
+<td>条目数 == 服务器返回的 ChannelCount</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>第 4 环是最容易被忽略的：<strong>“抓到了 HTTP 200”不等于“拿到了频道数据”</strong>。<br />
+服务器完全可能回一个 685 字节的空壳（详见 7.4）。</p>
+</blockquote>
+<hr />
+<h2 id="heading-1"><strong>二、环境与拓扑</strong></h2>
+<h3 id="21-"><strong>2.1 设备与角色</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>角色</strong></th>
+<th><strong>关键参数</strong></th>
+<th><strong>作用</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>运营商光猫</td>
+<td>有一个<strong>独立的 IPTV 口</strong>（Bridge 模式，绑定 VLAN）</td>
+<td>IPTV 流量的物理出口</td>
+</tr>
+<tr>
+<td>IPTV 机顶盒</td>
+<td>双栈：LAN 侧有内网地址，IPTV 侧有业务地址</td>
+<td>被分析对象</td>
+</tr>
+<tr>
+<td>接入交换机</td>
+<td><strong>非网管、不支持 802.1Q、无镜像口</strong></td>
+<td>限制条件（决定了抓包方案）</td>
+</tr>
+<tr>
+<td>软路由</td>
+<td>多网口 x86 设备，可作透明网桥</td>
+<td>抓包点载体</td>
+</tr>
+<tr>
+<td>分析机</td>
+<td>运行 Wireshark / tshark</td>
+<td>离线分析</td>
+</tr>
+</tbody>
+</table>
+<p><strong>机顶盒双地址必须分清</strong>（这是最容易填错 BPF 的地方）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>侧</strong></th>
+<th><strong>地址类型</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LAN 侧</td>
+<td>内网地址（如 <code>192.168.x.x</code>）</td>
+<td>走路由器上网，<strong>控制面也可能在这里</strong></td>
+</tr>
+<tr>
+<td>IPTV 侧</td>
+<td>运营商业务地址（如 <code>172.203.x.x</code>）</td>
+<td>网关是运营商设备，数据面组播在这里</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-"><strong>2.2 连接关系与拓扑演进</strong></h3>
+<p>IPTV 链路的连接方式直接决定能不能抓到单播。三种典型形态：</p>
+<p><strong>形态一：机顶盒直连光猫 IPTV 口</strong></p>
+<pre><code> 光猫 IPTV 口 ──── 机顶盒
+</code></pre>
+<p>抓包必须串在中间，无法旁路。</p>
+<p><strong>形态二：经交换机（最常见，也最容易踩坑）</strong></p>
+<pre><code> 光猫 IPTV 口 ──┐
+                ├── 交换机 ──┬── 机顶盒
+                │            └── 抓包机（旁路口）← 抓不到单播
+</code></pre>
+<p>二层交换机做“源 MAC 学习 + 定向转发”，机顶盒与光猫之间的<strong>单播只在它们各自那一对端口间走</strong>，<br />
+旁路第三个口只能看到<strong>广播 + 组播</strong>。</p>
+<p><strong>形态三：软路由替代交换机（本次采用）</strong></p>
+<pre><code> 光猫 IPTV 口 ── eth1 ─┐
+                       ├── br-iptv（二层透明网桥）
+ 机顶盒       ── eth2 ─┘
+ 管理机       ── eth3 ──── br-lan（另一个网段，SSH 不掉线）
+</code></pre>
+<p>把链路<strong>串进软路由</strong>，单播就必然穿透网桥，<code>eth1</code> 上两个方向都能看到。</p>
+<h3 id="23-"><strong>2.3 抓包点选择：决策树</strong></h3>
+<p>先问一个问题：<strong>你要抓的是单播，还是只需要广播/组播？</strong></p>
+<pre><code> 要抓的是单播吗？
+ ├─ 是 → 必须&quot;在链路中间&quot;
+ │        ├─ 有管理型交换机 → 用 SPAN 端口镜像（首选：零侵入、零风险）
+ │        └─ 没有          → 用软路由/一台 Linux 做 in-line 透明网桥
+ └─ 否（只抓广播/组播）→ 旁路口也能凑合
+</code></pre>
+<h4 id="231-span"><strong>2.3.1 方案一：交换机端口镜像（SPAN）</strong></h4>
+<p><strong>首选方案</strong>。不动任何接线，只在交换机上做一次配置。</p>
+<pre><code>         ┌──────────── 管理型交换机 ────────────┐
+ 光猫 ── port1                              port2 ── 机顶盒
+                     port3 ── 抓包机
+                     ↑
+               port2 设为 SPAN 源，port3 设为 SPAN 目标
+               （源端口收发的全部流量，从目标口原样复制一份）
+</code></pre>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>镜像方向要选 <strong>both（双向）</strong>，只镜 RX 或只镜 TX 会漏一半会话；</li>
+<li>目标口通常<strong>不能再承载正常业务</strong>；</li>
+<li>交换机必须支持 SPAN（非网管交换机做不到 —— 本次的硬约束）。</li>
+</ul>
+<h4 id="232-"><strong>2.3.2 方案二：软路由透明网桥</strong></h4>
+<p>交换机不支持镜像时的<strong>最优解，零硬件成本</strong>，代价是改接线（可能短暂断网）。</p>
+<pre><code> 光猫 ── eth1 ─┐
+               ├── br-iptv  ← 二层网桥，桥本身不做三层
+ 机顶盒 ── eth2 ┘
+ 抓包机 ── eth3 ──── br-lan（独立网段，SSH 不失联）
+</code></pre>
+<p><strong>透明网桥三要素，缺一不可</strong>：</p>
+<table>
+<thead>
+<tr>
+<th><strong>要素</strong></th>
+<th><strong>为什么</strong></th>
+<th><strong>配置</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>桥不做三层</strong></td>
+<td>桥接口一旦有 IP 就成了“路由器”，可能改包 / 改路径</td>
+<td>桥只做二层；如确需 IP，<strong>不要把它加进防火墙 zone</strong></td>
+</tr>
+<tr>
+<td><strong>关闭 IGMP snooping</strong></td>
+<td>开启后会“按需”剪枝组播，<strong>可能丢帧</strong></td>
+<td><code>option igmp_snooping '0'</code></td>
+</tr>
+<tr>
+<td><strong>关闭 bridge-nf-call-</strong>*</td>
+<td>否则桥接帧会被送进 netfilter 的 forward 链，<strong>policy drop 直接丢</strong></td>
+<td>置 0 / 确认 <code>br_netfilter</code> 未加载</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实际配置（OpenWrt / ImmortalWrt，UCI 写法）</strong>：</p>
+<pre><code> # ① 建立网桥设备，指定成员口
+ #    ipv6=0 顺手关掉，避免 IPv6 邻居发现干扰
+ uci set network.iptv_br=device
+ uci set network.iptv_br.name='br-iptv'
+ uci set network.iptv_br.type='bridge'
+ uci set network.iptv_br.ports='eth1 eth2'
+ uci set network.iptv_br.igmp_snooping='0'    # ★ 要素二
+ uci set network.iptv_br.stp='0'
+ uci set network.iptv_br.ipv6='0'
+ uci commit network
+ ​
+ # ② 让网桥生效
+ /etc/init.d/network reload
+</code></pre>
+<p><strong>验证三要素是否到位</strong>：</p>
+<pre><code> # 要素二：确认 igmp_snooping 已关（应为 0）
+ cat /sys/class/net/br-iptv/bridge/multicast_snooping
+ # 输出：0
+ ​
+ # 要素三：检查 bridge-nf 三个开关
+ # 全为 0 或文件不存在（NA）都算通过——NA 表示 br_netfilter 未加载，等效放行
+ for f in iptables ip6tables arptables; do
+   printf '%s = ' &quot;$f&quot;
+   cat /proc/sys/net/bridge/bridge-nf-call-$f 2&gt;/dev/null || echo &quot;NA&quot;
+ done
+ # 输出（本次实测）：
+ #   iptables = NA
+ #   ip6tables = NA
+ #   arptables = NA
+</code></pre>
+<blockquote>
+<p><strong>NA 为什么也算通过</strong>：<code>bridge-nf-call-*</code> 只有在 <code>br_netfilter</code> 模块加载后才存在。<br />
+文件不存在 = 模块没加载 = 桥接帧根本不会进 netfilter → <strong>天然放行</strong>。</p>
+</blockquote>
+<p><strong>黄金判据 —— 抓包前必做</strong>：</p>
+<pre><code> # 作用：打印网桥转发表，看每个端口学到了哪些 MAC
+ brctl showmacs br-iptv
+</code></pre>
+<pre><code> # 输出（本次实测，已脱敏）：
+ port no  mac addr            is local?  ageing timer
+   1      0c:12:62:b4:f4:10   no          0.00    ← eth1 侧，光猫       ★ 必须有
+   2      48:57:02:25:bb:e3   no          0.15    ← eth2 侧，机顶盒     ★ 必须有
+   1      60:be:b4:02:68:0f   yes         —       ← 网桥自己的 MAC，忽略
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li><code>port no</code> 对应成员口（1=eth1，2=eth2）；</li>
+<li><code>is local? = no</code> <strong>的条目才是外部设备</strong>（<code>yes</code> 是网桥自身）；</li>
+<li><strong>两条腿都学到 MAC</strong>，才证明单播二层转发已打通。缺任一条，后面全白干；</li>
+<li><code>ageing timer</code> 是老化倒计时（秒），<strong>越小说明越活跃</strong>。<br />
+若看到 <code>300+</code> 说明该设备很久没发包了。</li>
+</ul>
+<pre><code> # 若 FDB 里没有目标设备，先确认接口本身有载波
+ ip -br link show eth1 eth2
+ # 输出示例：
+ # eth1     UP    60:be:b4:02:68:0f &lt;...&gt;     ← UP 且有 MAC，正常
+ # eth2     DOWN  60:be:b4:02:68:10 &lt;NO-CARRIER,...&gt;   ← ★ NO-CARRIER，机顶盒没接上
+</code></pre>
+<blockquote>
+<p>:warning: <code>NO-CARRIER</code> <strong>是最常见的“抓不到”原因</strong> —— 接口没插线/对端没上电，<br />
+此时“能抓到流量”是假象（收到的是其他口泛洪的镜像）。</p>
+</blockquote>
+<h4 id="233-"><strong>2.3.3 为什么“旁路”不行（原理）</strong></h4>
+<p>普通二层交换机做两件事：</p>
+<ol>
+<li><strong>源 MAC 学习</strong> —— 收到帧，把“源 MAC :left_right_arrow: 入端口”记进 FDB 表；</li>
+<li><strong>定向转发</strong> —— 查目的 MAC，只从对应端口发出（查不到才泛洪）。</li>
+</ol>
+<pre><code>         ┌──────────── 交换机（非网管）────────────┐
+ 光猫 ──── port1                                port2 ──── 机顶盒
+                   port3 ──── 抓包机  ← 在这里抓
+</code></pre>
+<p>机顶盒 :left_right_arrow: 光猫的<strong>单播</strong>只在 <code>port1</code> :left_right_arrow: <code>port2</code> 之间走，<strong>永不出现于 port3</strong>。<br />
+port3 上只剩<strong>广播</strong>（ARP / DHCP 部分）和<strong>组播</strong>（视频流）。</p>
+<p><strong>控制面 vs 数据面的可见性对照</strong>：</p>
+<table>
+<thead>
+<tr>
+<th><strong>层面</strong></th>
+<th><strong>典型协议</strong></th>
+<th><strong>单播/组播</strong></th>
+<th><strong>旁路可见</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>控制面</strong></td>
+<td>DHCP、HTTP（认证、频道表）</td>
+<td><strong>单播</strong></td>
+<td>:cross_mark: <strong>看不到</strong></td>
+</tr>
+<tr>
+<td>数据面</td>
+<td>频道视频流 <code>239.x.x.x:4120</code></td>
+<td>组播</td>
+<td>:check_mark_button: 看得到</td>
+</tr>
+</tbody>
+</table>
+<p>→ 旁路抓包的典型结果是：<strong>能列出组播地址，永远拿不到频道名</strong><br />
+（频道名在<strong>单播的 HTTP 响应</strong>里）。</p>
+<hr />
+<h2 id="heading-2"><strong>三、抓包工具选型</strong></h2>
+<h3 id="31-"><strong>3.1 工具优先级判据</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>优先级</strong></th>
+<th><strong>来源</strong></th>
+<th><strong>定义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>成品软件</strong></td>
+<td>Wireshark / tshark / tcpdump 等成熟工具</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>可获取的成熟方案</strong></td>
+<td>本地没有，但<strong>能方便下载安装</strong>的包（如 <code>opkg install tcpdump</code>）</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>广泛使用的开源项目</strong></td>
+<td>GitHub 上被广泛使用、有社区维护的项目</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>自建脚本（最后手段）</strong></td>
+<td>仅当 1–3 全部不可用</td>
+</tr>
+</tbody>
+</table>
+<p><strong>自建的触发条件</strong>（三条同时满足才动手）：</p>
+<ol>
+<li>无成品软件可用，且<strong>无被广泛使用的成熟开源项目</strong>；</li>
+<li>已有的替代方案<strong>安装成本过高或根本装不上</strong>（如精简固件的包管理器为空）；</li>
+<li>自建方案能覆盖“<strong>持续运行 + 全量落盘 + 可重复离线分析</strong>”三项需求。</li>
+</ol>
+<blockquote>
+<p>反例：仅仅因为“本机没装 Wireshark”就自建抓包脚本 —— 属于滥用。<br />
+正确做法是先评估安装成本。</p>
+</blockquote>
+<h3 id="32-"><strong>3.2 候选工具对照</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>工具</strong></th>
+<th><strong>形态</strong></th>
+<th><strong>优势</strong></th>
+<th><strong>局限</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wireshark（GUI）</strong></td>
+<td>桌面成品</td>
+<td>强大、可视化、协议解码全</td>
+<td>需图形环境</td>
+</tr>
+<tr>
+<td><strong>tshark</strong></td>
+<td>命令行</td>
+<td>同为 Wireshark 引擎，可脚本化</td>
+<td>需本机安装</td>
+</tr>
+<tr>
+<td><strong>tcpdump</strong></td>
+<td>命令行</td>
+<td>极轻量，路由器固件常自带</td>
+<td>只能抓/筛，不解析协议</td>
+</tr>
+<tr>
+<td><strong>sshdump（Wireshark 远程）</strong></td>
+<td>需远端 <code>dumpcap</code></td>
+<td>图形界面直接抓远端</td>
+<td>远端必须有 <code>dumpcap</code></td>
+</tr>
+<tr>
+<td>自建 SSH 流式脚本</td>
+<td>自写</td>
+<td>远端零改动</td>
+<td>需自己处理缓冲/截断</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-"><strong>3.3 选型过程（本项目实例）</strong></h3>
+<pre><code> ① 首选 Wireshark 的 sshdump 远程抓包
+    └─ ❌ 远端是精简固件的 OpenWrt：无 dumpcap，包管理器源为空，装不上
+ ② 退一步：用远端 tcpdump（固件自带）
+    └─ ✅ 有
+ ③ 但远端抓完的文件怎么拉回？
+    ├─ SFTP ── ❌ 精简固件的 dropbear 无 sftp 子系统
+    └─ ✅ 用 SSH exec 把 tcpdump 输出流式接回本地
+</code></pre>
+<p><strong>最终做法</strong>：本地跑一个脚本，SSH 到路由器执行<br />
+<code>tcpdump -i &lt;iface&gt; -nn -U -s 0 -w - &lt;bpf&gt;</code>，<br />
+<code>-w -</code> 表示<strong>把 pcap 写到 stdout</strong>，通过 SSH 通道把字节流直接落到本地文件。</p>
+<p><strong>远端命令逐参数拆解</strong>：</p>
+<pre><code> tcpdump -i &lt;iface&gt; -nn -U -s 0 -w - &quot;&lt;BPF&gt;&quot; 2&gt;/dev/null
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>为什么必需</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-i &lt;iface&gt;</code></td>
+<td>指定接口</td>
+<td><strong>必须真实接口名</strong>；某些内核不支持 <code>-i any</code> 的混杂模式</td>
+</tr>
+<tr>
+<td><code>-nn</code></td>
+<td>不做名称解析（IP、端口都保持数字）</td>
+<td>避免 DNS 反查拖慢抓包</td>
+</tr>
+<tr>
+<td><code>-U</code></td>
+<td><strong>packet-buffered</strong>，收到即写</td>
+<td>默认会攒满 4KB 才写；不加以至流式传输没有实时性</td>
+</tr>
+<tr>
+<td><code>-s 0</code></td>
+<td>抓<strong>完整包</strong>（snaplen 无限）</td>
+<td>默认只抓 96 字节，HTTP 响应体直接被截断，无法解析</td>
+</tr>
+<tr>
+<td><code>-w -</code></td>
+<td>pcap 写到 <strong>stdout</strong></td>
+<td>配合 SSH 通道/管道，是流式接回的关键</td>
+</tr>
+<tr>
+<td><code>&quot;&lt;BPF&gt;&quot;</code></td>
+<td>抓包过滤器</td>
+<td>见第四章，建议 <code>ip or arp</code> 全抓</td>
+</tr>
+<tr>
+<td><code>2&gt;/dev/null</code></td>
+<td>丢弃 stderr</td>
+<td>避免警告混进 pcap 字节流<strong>污染文件</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>等价的最小实现（不用脚本，纯命令行）</strong>：</p>
+<pre><code> # 在本地执行：把远端的 tcpdump 输出直接落成本地 pcap
+ # -T 禁用伪终端分配，避免 dropbear 把二进制流当终端输出做换行转换
+ ssh root@&lt;router&gt; &quot;tcpdump -i eth1 -nn -U -s 0 -w - 'ip or arp'&quot; &gt; local_capture.pcap
+</code></pre>
+<blockquote>
+<p>:warning: <strong>必须加</strong> <code>-T</code>（或 <code>-tt</code>）：</p>
+<pre><code> ssh -T root@&lt;router&gt; &quot;tcpdump ... -w -&quot; &gt; local_capture.pcap
+</code></pre>
+<p>不加的话，SSH 会分配伪终端并把 <code>\n</code> 转成 <code>\r\n</code>，<br />
+<strong>写出的 pcap 会因字节膨胀而损坏</strong>。</p>
+</blockquote>
+<p><strong>脚本版（Python + paramiko）的核心逻辑</strong>：</p>
+<pre><code> # 伪代码：建立 SSH 后开一个 session channel，把 stdout 字节流写入本地文件
+ chan = client.get_transport().open_session()
+ chan.settimeout(seconds)
+ chan.exec_command(&quot;tcpdump -i eth1 -nn -U -s 0 -w - 'ip or arp' 2&gt;/dev/null&quot;)
+ ​
+ with open(out, &quot;wb&quot;) as f:
+     while True:
+         data = chan.recv(65536)
+         if not data:
+             break
+         f.write(data)      # ★ 二进制模式写入，绝不能是文本模式
+</code></pre>
+<p><strong>这条路的价值</strong>：远端零改动、本地拿到标准 pcap，可用任意 tshark 过滤器反复分析。</p>
+<h3 id="34-"><strong>3.4 命令行速查的通用约定</strong></h3>
+<p>后续所有示例遵循以下约定，<strong>请先读完本节再看示例</strong>。</p>
+<h4 id="heading-3"><strong>环境前提</strong></h4>
+<p>Wireshark 命令行工具（<code>tshark</code> / <code>capinfos</code> / <code>editcap</code>）<strong>默认不在 PATH</strong>，先加进去：</p>
+<pre><code> # Windows（Git Bash）：Wireshark 默认装在 Program Files
+ # 路径含空格，必须加引号；注意用 /d/ 而不是 D:\
+ export PATH=&quot;$PATH:/d/Program Files/Wireshark&quot;
+ ​
+ # Linux / macOS
+ export PATH=&quot;$PATH:/usr/sbin:/usr/local/bin&quot;
+</code></pre>
+<p>验证工具链是否就绪：</p>
+<pre><code> tshark -v
+ # 输出：TShark (Wireshark) 4.6.9 (v4.6.9-0g2d548b197c75)
+</code></pre>
+<h4 id="heading-4"><strong>占位符约定</strong></h4>
+<table>
+<thead>
+<tr>
+<th><strong>占位符</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>本次实例</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;iface&gt;</code></td>
+<td>抓包的<strong>物理接口名</strong></td>
+<td><code>eth1</code></td>
+</tr>
+<tr>
+<td><code>&lt;bridge&gt;</code></td>
+<td>网桥接口名</td>
+<td><code>br-iptv</code></td>
+</tr>
+<tr>
+<td><code>X.pcap</code></td>
+<td>抓包文件名</td>
+<td><code>eth1_stb_20261003.pcap</code></td>
+</tr>
+<tr>
+<td><code>&lt;STB-MAC&gt;</code></td>
+<td>机顶盒 MAC</td>
+<td><code>48:57:02:25:bb:e3</code></td>
+</tr>
+<tr>
+<td><code>&lt;N&gt;</code></td>
+<td>TCP 流号</td>
+<td><code>20</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>文中出现具体值的地方均标注“（本次实测）”。<strong>你的环境一定会不同</strong>，<br />
+照抄前先替换成自己的值。</p>
+</blockquote>
+<h4 id="tshark-"><strong>tshark 四个核心参数</strong></h4>
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>作用</strong></th>
+<th><strong>记忆点</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-r X.pcap</code></td>
+<td><strong>读取</strong>已有文件</td>
+<td>read</td>
+</tr>
+<tr>
+<td><code>-w Y.pcap</code></td>
+<td><strong>写出</strong>到文件</td>
+<td>write</td>
+</tr>
+<tr>
+<td><code>-Y &quot;&lt;表达式&gt;&quot;</code></td>
+<td><strong>显示过滤器</strong>（分析时筛选）</td>
+<td>首字母大写，语法如 <code>http.request</code></td>
+</tr>
+<tr>
+<td><code>-T fields -e &lt;字段&gt;</code></td>
+<td>输出<strong>指定字段</strong>而非完整解码</td>
+<td>便于 <code>sort</code> / <code>uniq</code> / <code>awk</code></td>
+</tr>
+<tr>
+<td><code>-q -z &lt;统计&gt;</code></td>
+<td>只出统计，不逐包打印</td>
+<td>用于体检类输出</td>
+</tr>
+</tbody>
+</table>
+<h4 id="--y--bpf-"><strong>★ 最容易混的点：</strong><code>-Y</code> <strong>和 BPF 不是一回事</strong></h4>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>BPF（抓包过滤）</strong></th>
+<th><strong>显示过滤器（</strong><code>tshark -Y</code><strong>）</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用在哪</td>
+<td><code>tcpdump</code> <strong>抓包时</strong></td>
+<td><code>tshark</code> <strong>分析时</strong></td>
+</tr>
+<tr>
+<td>语法</td>
+<td><code>ip or arp</code>、<code>port 67</code></td>
+<td><code>http.request</code>、<code>tcp.stream==20</code></td>
+</tr>
+<tr>
+<td>大小写</td>
+<td>关键字小写</td>
+<td><strong>协议名字段名有大小写规范</strong></td>
+</tr>
+<tr>
+<td>能否事后改</td>
+<td>:cross_mark: 抓的时候漏了就没救</td>
+<td>:check_mark_button: 可对同一文件反复换条件</td>
+</tr>
+</tbody>
+</table>
+<pre><code> # ❌ 错误示范：把显示过滤器语法喂给 tcpdump
+ tcpdump -i eth1 &quot;http.request&quot;        # 报语法错，抓不到东西
+ ​
+ # ✅ 正确：tcpdump 用 BPF，tshark 用显示过滤器
+ tcpdump -i eth1 &quot;ip or arp&quot;
+ tshark  -r X.pcap -Y &quot;http.request&quot;
+</code></pre>
+<blockquote>
+<p><strong>抓包用 BPF，分析用</strong> <code>-Y</code>。抓包时尽量放宽（宁可全抓），分析时再精确筛。</p>
+</blockquote>
+<hr />
+<h2 id="heading-5"><strong>四、抓包流程总览</strong></h2>
+<h3 id="41-"><strong>4.1 流程线</strong></h3>
+<pre><code> ① 确认链路可抓  →  ② 布置抓包点  →  ③ 验证抓包点有效
+                                             ↓
+             ⑥ 定位控制面  ←  ⑤ 落地体检  ←  ④ 执行抓包
+                     ↓
+             ⑦ 切流导出对象  →  ⑧ 解析成结构化清单  →  ⑨ 生成播放列表
+</code></pre>
+<h3 id="42-"><strong>4.2 每步一句话</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>步</strong></th>
+<th><strong>做什么</strong></th>
+<th><strong>一句话</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>确认链路</td>
+<td>机顶盒能否在链路上独立 DHCP 拿到 IPTV 侧地址</td>
+</tr>
+<tr>
+<td>②</td>
+<td>布置抓包点</td>
+<td>SPAN 优先，否则软路由透明网桥</td>
+</tr>
+<tr>
+<td>③</td>
+<td>验证有效性</td>
+<td>看到目标设备的 MAC 才算抓对地方</td>
+</tr>
+<tr>
+<td>④</td>
+<td>执行抓包</td>
+<td>全抓 + 覆盖关键动作（重启 → 认证 → 拉列表 → 切台）</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>落地体检</td>
+<td>先看包数/时长/协议分布，再谈解析</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>定位控制面</td>
+<td>从 DHCP 到认证到列表接口，串出完整会话链</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>切流导出</td>
+<td>先按流切分，再导出 HTTP 对象（自动解压）</td>
+</tr>
+<tr>
+<td>⑧</td>
+<td>解析</td>
+<td>从响应体抽字段 → 结构化清单</td>
+</tr>
+<tr>
+<td>⑨</td>
+<td>生成列表</td>
+<td>组装成播放器可用的 m3u8</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="heading-6"><strong>五、分步流程详解</strong></h2>
+<blockquote>
+<p>表中“实际拿到”列取自本次实战；“差异分析”说明为什么与预期不同。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><strong>步</strong></th>
+<th><strong>目标</strong></th>
+<th><strong>期望拿到</strong></th>
+<th><strong>成功特征</strong></th>
+<th><strong>实际拿到</strong></th>
+<th><strong>差异分析</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>确认链路可抓</td>
+<td>机顶盒能独立完成 DHCP</td>
+<td>DHCP 四步 <code>Discover→Offer→Request→ACK</code> 齐全</td>
+<td><strong>ACK 成功</strong></td>
+<td>:warning: 早前多次抓到 <code>NAK</code>，误判为“业务退订”；实为抓包点旁路，只看到片段。改透明网桥后一次成功</td>
+</tr>
+<tr>
+<td>②</td>
+<td>布置抓包点</td>
+<td>链路串入软路由</td>
+<td>网桥建成、<code>igmp_snooping=0</code></td>
+<td>网桥 <code>br-iptv</code> 建成</td>
+<td>—</td>
+</tr>
+<tr>
+<td>③</td>
+<td>验证有效性</td>
+<td>FDB 两条腿都有 MAC</td>
+<td><code>brctl showmacs</code> 两条都有</td>
+<td><strong>两条都有</strong></td>
+<td>这是分水岭：此判据不通过，后续全部无意义</td>
+</tr>
+<tr>
+<td>④</td>
+<td>执行抓包</td>
+<td>pcap 覆盖完整会话</td>
+<td>包数/时长合理，目标 MAC 出现</td>
+<td>277604 包 / 360s，机顶盒 MAC 出现 26508 次</td>
+<td>BPF 用 <code>ip or arp</code> <strong>不按端口过滤</strong>，否则漏组播</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>落地体检</td>
+<td>确认抓到的是“谁”的流量</td>
+<td>协议分层合理，目标设备 IP 出现在会话中</td>
+<td>光猫 216149 / 机顶盒 26508 包</td>
+<td>曾因只统计总量忽略源 MAC 分布，误判过抓包点</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>定位控制面</td>
+<td>找到频道表接口</td>
+<td>认证链全 200，<code>isSucessed=true</code></td>
+<td>认证全通，<code>getchannellistHWCU.jsp</code> 返回 <strong>156 频道</strong>（gzip，解压 190697 B）</td>
+<td>:warning: 频道接口不是唯一入口，<code>Category.jsp</code> 更常见但可能因会话过期返回 302</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>切流导出</td>
+<td>导出频道表原始体</td>
+<td>导出对象可读、gzip 已解压</td>
+<td><code>_o20/</code> 下得到解压后的响应体</td>
+<td><strong>必须先切流再导出</strong>，否则跨流聚合同名对象，结果不可信</td>
+</tr>
+<tr>
+<td>⑧</td>
+<td>解析</td>
+<td>结构化清单</td>
+<td>条目数 == ChannelCount</td>
+<td>156 条 → <code>channels.csv</code> / <code>channels.m3u8</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>⑨</td>
+<td>生成列表</td>
+<td>播放器可用</td>
+<td>能被播放器加载</td>
+<td>生成 <code>rtp://</code> 列表（详见第九章）</td>
+<td>PC 端还需转封装，见 9.2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-"><strong>5.1 抓包参数（本次实测）</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>值</strong></th>
+<th><strong>理由</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>接口</td>
+<td><code>eth1</code>（桥的<strong>光猫侧成员口</strong>）</td>
+<td>选成员口而非桥设备，两个方向都在</td>
+</tr>
+<tr>
+<td>时长</td>
+<td>360 s</td>
+<td>覆盖“断电重启 → 认证 → 开频道列表 → 切台”全过程</td>
+</tr>
+<tr>
+<td>BPF</td>
+<td><code>ip or arp</code></td>
+<td><strong>绝不按端口过滤</strong>（会漏组播/非标准端口）</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>277604 包 / ~356 MB</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>完整抓包命令（逐参数注释）</strong>：</p>
+<pre><code> # 在软路由上执行（或经 SSH 流式接回本地，见 3.3）
+ tcpdump \
+   -i eth1 \          # 桥的光猫侧成员口：两个方向的单播都经过它
+   -nn \              # 不做名称解析，保持数字形式，避免 DNS 反查拖慢
+   -U \               # packet-buffered：收到即写，不等 4KB 缓冲
+   -s 0 \             # snaplen=0 表示抓完整包（默认 96B 会截断 HTTP 响应）
+   -w - \             # pcap 写 stdout（流式接回时用）；本地抓则写文件名
+   'ip or arp'        # ★ BPF：全抓 IP + ARP，不按端口过滤
+</code></pre>
+<p><strong>为什么 BPF 是</strong> <code>ip or arp</code> <strong>而不是按端口</strong>：</p>
+<pre><code> # 
+</code></pre>
+<p>:cross_mark: 反面示范：按“常见 IPTV 端口”过滤<br />
+ tcpdump -i eth1 “port 80 or port 443 or port 554 or port 4120”<br />
+ #   问题：漏掉非标准端口（运营商改端口就全废）、漏掉 DHCP（67/68）、漏掉 ARP<br />
+ ​<br />
+ # ✅ 正确：全抓，分析时再筛<br />
+ tcpdump -i eth1 “ip or arp”<br />
+ #   代价：文件大（本次 356MB）<br />
+ #   收益：一次抓全，事后可用任意过滤器反复分析——抓包机会往往只有一次</p>
+<p><strong>如果只想抓单播（排除组播以免文件过大）</strong>：</p>
+<pre><code> # 抓&quot;非组播&quot;的 IP 流量 + ARP
+ tcpdump -i eth1 &quot;ip and not dst net 239.0.0.0/8 or arp&quot;
+</code></pre>
+<blockquote>
+<p>:warning: BPF 语法坑：<code>ip and 239.0.0.0/8</code> 这种写法<strong>静默匹配不到任何东西</strong>，<br />
+必须写成 <code>dst net 239.0.0.0/8</code>（明确 <code>net</code> 关键字 + 方向）。</p>
+</blockquote>
+<h3 id="52-"><strong>5.2 认证链（本次实测，帧号可查）</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>帧</strong></th>
+<th><strong>方法</strong></th>
+<th><strong>URI</strong></th>
+<th><strong>结果</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101404</td>
+<td>GET</td>
+<td><code>/EDS/jsp/AuthenticationURL?UserID=&lt;账号&gt;&amp;Action=Login</code></td>
+<td>302</td>
+</tr>
+<tr>
+<td>101413</td>
+<td>GET</td>
+<td><code>/EPG/jsp/AuthenticationURL?...</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>101418</td>
+<td>POST</td>
+<td><code>/EPG/jsp/authLoginHWCU.jsp</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>101422</td>
+<td>POST</td>
+<td><code>/EPG/jsp/ValidAuthenticationHWCU.jsp</code></td>
+<td>200 gzip</td>
+</tr>
+<tr>
+<td><strong>101428</strong></td>
+<td>POST</td>
+<td><code>/EPG/jsp/getchannellistHWCU.jsp</code></td>
+<td><strong>200 gzip → 190697 B ★ 频道表</strong></td>
+</tr>
+<tr>
+<td>101451</td>
+<td>POST</td>
+<td><code>/EPG/jsp/ServicesEntryHWCU.jsp</code></td>
+<td>200</td>
+</tr>
+</tbody>
+</table>
+<p>认证结果 <code>isSucessed=true</code>，<code>UserToken=&lt;已脱敏&gt;</code>。</p>
+<h3 id="53-"><strong>5.3 执行抓包的动作序（关键）</strong></h3>
+<p><strong>抓包必须覆盖完整开机流程</strong>，顺序建议：</p>
+<pre><code>1. 先把 tcpdump 跑起来（进入等待）
+2. 再给机顶盒断电重启          ← 不能反过来
+3. 等待认证完成（观察组播流出现）
+4. 在电视上打开频道列表 / 切台
+5. 跑满时长后停止
+</code></pre>
+<p>时机错位是“抓到包但没频道表”的最常见原因 —— <strong>认证是一次性的，错过就没有</strong>。</p>
+<p><strong>可执行的时序骨架</strong>（手动操作也照这个顺序）：</p>
+<pre><code># ── 第 1 步：先起抓包（SSH 流式接回，放后台跑） ──
+# 3600s 是兜底上限，实际靠 Ctrl-C 或 kill 结束
+ssh -T root@192.168.100.1 \
+    &quot;tcpdump -i eth1 -nn -U -s 0 -w - 'ip or arp'&quot; \
+    &gt; capture.pcap &amp;
+CAP_PID=$!
+
+# 等 2 秒，确认 tcpdump 真的起来了（文件在增长）
+sleep 2
+ls -l capture.pcap     # 大小应为几 KB 并在增长；若是 0 说明没抓上
+
+# ── 第 2 步：此时才给机顶盒断电重启（物理操作） ──
+echo &quot;现在去重启机顶盒，然后等它开机完成、打开频道列表、切一次台&quot;
+
+# ── 第 3 步：观察控制面是否出现（可选，实时验证） ──
+# 另开一个终端，边抓边看（同样连路由器）
+# ssh root@192.168.100.1 &quot;tcpdump -i eth1 -nn 'tcp port 80 or tcp port 33200' -c 20&quot;
+
+# ── 第 4 步：跑满后停止 ──
+sleep 360
+kill $CAP_PID
+
+# ── 第 5 步：立刻体检，确认这包有没有价值 ──
+capinfos capture.pcap
+</code></pre>
+<p><strong>自检点</strong>：</p>
+<ul>
+<li>第 1 步后<strong>必须</strong>确认文件在增长，否则可能接口名写错/无载波；</li>
+<li>若抓完发现“没有 HTTP 请求”，说明错过了开机窗口，重来一次；</li>
+<li><strong>不要在抓包开始前就重启机顶盒</strong> —— 这是最常见的失误。</li>
+</ul>
+<hr />
+<h2 id="heading-7"><strong>六、数据包分析要点</strong></h2>
+<h3 id="61-"><strong>6.1 通用分析链</strong></h3>
+<pre><code>capinfos 体检（包数/时长/接口）
+  → 源 MAC 分布 / 协议层次（谁在说话）
+  → 按协议分组：DHCP / ARP / HTTP / IGMP / 组播
+  → 锁定关键 TCP 流 → 切流 → 导出对象（自动解压）
+  → 解析出结构化清单
+</code></pre>
+<h3 id="62-"><strong>6.2 本项目实例（命令可复现）</strong></h3>
+<blockquote>
+<p>以下每条命令都<strong>已在本机实测</strong>，输出片段为真实结果。</p>
+</blockquote>
+<h4 id="-"><strong>① 体检：先看这包“是不是个正常包”</strong></h4>
+<pre><code># 作用：输出文件级元信息——包数、时长、接口封装、哈希
+capinfos X.pcap
+</code></pre>
+<pre><code># 输出（本次实测，节选）：
+File name:           eth1_stb_20261003.pcap
+File type:           Wireshark/... - pcapng
+File encapsulation:  Ethernet            ← 封装类型，必须是 Ethernet（不是 Linux SLL）
+Number of packets:   277 k               ← 包数
+File size:           361 MB
+Capture duration:    359.791908 seconds  ← 时长，与预期抓包时长是否一致
+Earliest packet time: 2026-10-03 16:38:41.897721
+Latest packet time:   2026-10-03 16:44:41.689629
+SHA256:              dbfd4c364d7a01fb...cc73b6d  ← 用于校验文件完整性
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li><strong>封装必须是 Ethernet</strong>。若显示 <code>Linux cooked (SLL)</code>，说明包是从 <code>-i any</code> 抓的，<br />
+解析脚本可能要额外处理偏移；</li>
+<li><strong>时长应接近你设定的抓包时长</strong>。差太多说明抓包被提前中断；</li>
+<li>包数 × 平均长度 ≈ 文件大小，明显不符说明有截断。</li>
+</ul>
+<h4 id="--mac-"><strong>② 看“谁在说话”：源 MAC 分布</strong></h4>
+<pre><code># 作用：统计每个源 MAC 发了多少包，按数量倒序
+# 原理：-e eth.src 只输出源 MAC 字段 → sort 排序 → uniq -c 计数 → sort -rn 按数量倒排
+tshark -r X.pcap -T fields -e eth.src 2&gt;/dev/null | sort | uniq -c | sort -rn
+</code></pre>
+<pre><code># 输出（本次实测）：
+ 251063 0c:12:62:b4:f4:10   ← 光猫侧（运营商设备）
+  26509 48:57:02:25:bb:e3   ← ★ 机顶盒！出现即证明抓到目标流量
+     32 4c:ac:0a:dc:6c:9d   ← 零散第三方设备
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li><strong>目标设备（机顶盒）的 MAC 必须出现</strong>，且数量可观（本次 26509 包）；</li>
+<li>只有目标设备出现 → 抓对了；完全不出现 → 抓包点错了；</li>
+<li>出现但只有几条 → 只抓到广播/邻居发现，没抓到会话。</li>
+</ul>
+<blockquote>
+<p>:warning: 这一步是<strong>验证抓包点是否正确的关键</strong>，比看包数总数重要得多。</p>
+</blockquote>
+<h4 id="--1"><strong>③ 协议分层：看流量的构成</strong></h4>
+<pre><code># 作用：输出协议层次统计树（哪层占多少帧/字节）
+# -q 表示安静模式（不逐包打印），-z io,phs 是协议层次统计
+tshark -r X.pcap -q -z io,phs 2&gt;/dev/null
+</code></pre>
+<pre><code># 输出（本次实测，节选）：
+frame                              frames:277604 bytes:352490544
+  eth                              frames:277604 bytes:352490544
+    ip                             frames:277396 bytes:352478064
+      udp                          frames:217635 bytes:296239713
+        mp2t                       frames:217554 bytes:296229248   ← ★ MPEG-TS
+          mp2t                     frames:213676 bytes:290952396
+            mp2t                   frames:211788 bytes:288384544
+              ...                  （层层嵌套是 tshark 对 TS 包的展开）
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li>出现 <code>mp2t</code>（MPEG-TS）且占比极大 → 确认是 IPTV 视频流；</li>
+<li>如果 <code>tcp</code> 占比高、没有 <code>mp2t</code> → 你可能抓的是普通上网流量，不是 IPTV；</li>
+<li>若 UDP 下全是 <code>mp2t</code> 而无 <code>http</code> 等控制协议，说明<strong>只抓到数据面，控制面没进来</strong>。</li>
+</ul>
+<h4 id="-dhcp-"><strong>④ DHCP 链：确认地址协商成功</strong></h4>
+<pre><code># 作用：列出所有 DHCP 报文
+# -Y &quot;bootp&quot; 是 DHCP 在 tshark 里的协议名（历史原因，不叫 dhcp）
+# bootp.option.dhcp 是消息类型编码：1=Discover 2=Offer 3=Request 5=ACK 6=NAK
+tshark -r X.pcap -Y &quot;bootp&quot; -T fields \
+       -e frame.number -e ip.src -e ip.dst -e bootp.option.dhcp 2&gt;/dev/null
+</code></pre>
+<pre><code># 输出（本次实测）：
+99400   0.0.0.0          255.255.255.255  3   ← Request
+99411   172.203.68.1     255.255.255.255  6   ← ★ NAK（拒绝！）
+100270  0.0.0.0          255.255.255.255  1   ← Discover
+100278  172.203.68.1     172.203.69.247   2   ← Offer（分配地址）
+100279  0.0.0.0          255.255.255.255  3   ← Request
+100287  172.203.68.1     172.203.69.247   5   ← ★ ACK（成功）
+123188  172.203.68.1     255.255.255.255  6   ← 后续 NAK（租约续期被拒）
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li>完整成功链 = <code>1 → 2 → 3 → 5</code>（Discover → Offer → Request → ACK）；</li>
+<li>看到 <code>6</code><strong>（NAK）</strong> 不代表业务故障 —— 本次先 NAK 后成功，<br />
+是光猫对旧租约先拒再重发；</li>
+<li><strong>关键判断</strong>：只要能追到 <code>2</code>（Offer）+ <code>5</code>（ACK），地址协商就是通的。</li>
+</ul>
+<h4 id="-http-"><strong>⑤ HTTP 控制面：列出所有请求</strong></h4>
+<pre><code># 作用：列出全部 HTTP 请求，定位你关心的接口
+# 字段：帧号 / 目标 IP / 目标端口 / 方法 / URI
+tshark -r X.pcap -Y &quot;http.request&quot; -T fields \
+       -e frame.number -e ip.dst -e tcp.dstport -e http.request.method \
+       -e http.request.uri 2&gt;/dev/null
+</code></pre>
+<pre><code># 输出（本次实测，节选）：
+569   10.11.37.165  33200  GET  /EPG/jsp/defaultok/en/datajsp/getTvodProgListByIndex.jsp?CHANNELID=...
+1146  10.11.37.165  33200  GET  /EPG/jsp/defaultok/en/datajsp/getTvodProgListByIndex.jsp?CHANNELID=...
+...
+101428 10.11.37.165 33200  POST /EPG/jsp/getchannellistHWCU.jsp     ← ★ 频道表接口
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li>用 URI 关键字定位目标接口。本次是 <code>getchannellist</code>；</li>
+<li>注意到了吗：<strong>同一个接口可能被请求多次</strong>（<code>101428</code> 是回去的，还有一条 <code>101448</code>）；</li>
+<li>目标 IP + 端口（<code>10.11.37.165:33200</code>）是该运营商 EPG 门户，<strong>从中可反查服务角色</strong>。</li>
+</ul>
+<blockquote>
+<p>如果这里 <code>http.request</code> 一条都没有 → 控制面根本没过抓包点，<br />
+回头检查抓包点位置（第二章）。</p>
+</blockquote>
+<h3 id="621--"><strong>6.2.1 ★ 定位关键流的正确姿势（不要硬编码流号）</strong></h3>
+<p>很多教程直接写 <code>tcp.stream==20</code>，<strong>这是不可复现的</strong> —— 流号取决于抓包起点，<br />
+换一次抓包就变了。正确做法是<strong>先查出流号</strong>：</p>
+<pre><code># 第一步：按 URI 关键字反查这条会话属于哪个 TCP 流
+tshark -r X.pcap -Y 'http.request.uri contains &quot;getchannellist&quot;' \
+       -T fields -e frame.number -e tcp.stream -e ip.dst -e http.request.uri 2&gt;/dev/null
+</code></pre>
+<pre><code># 输出（本次实测）：
+101428  20  10.11.37.165      /EPG/jsp/getchannellistHWCU.jsp
+101448  20  172.203.69.247    /EPG/jsp/getchannellistHWCU.jsp
+</code></pre>
+<p>→ 得到<strong>流号 20</strong>。然后再用它切流：</p>
+<pre><code># 第二步：用查到的流号切出这条会话（-w 写出新 pcap）
+tshark -r X.pcap -Y &quot;tcp.stream==20&quot; -w _s20.pcap
+</code></pre>
+<blockquote>
+<p><strong>可复现性的关键</strong>：把“查流号”和“切流”分成两步。<br />
+下次换一份 pcap，第一条命令会给出新的流号，流程不变。</p>
+</blockquote>
+<h3 id="622--"><strong>6.2.2 ★ 确认拿到的是“真频道表”而不是空壳</strong></h3>
+<p><strong>这是最容易误判的地方</strong>：HTTP 200 不代表有数据。</p>
+<pre><code># 作用：列出该流的所有响应，看状态码 + 内容长度 + 是否压缩
+tshark -r X.pcap -Y &quot;tcp.stream==20 &amp;&amp; http.response&quot; -T fields \
+       -e frame.number -e http.response.code -e http.content_length \
+       -e http.content_encoding 2&gt;/dev/null
+</code></pre>
+<pre><code># 输出（本次实测）：
+101416  200  685     ← ⚠️ 只有 685 字节，且未压缩 = 空壳！
+101420  200  3067
+101426  200          gzip   ← 压缩响应，长度未知（需解压后才知道）
+101448  200          gzip   ← ★ 这才是真频道表（解压后 190697 B）
+101452  200  494
+101462  200  6658
+</code></pre>
+<p><strong>怎么读</strong> —— 三个判据：</p>
+<table>
+<thead>
+<tr>
+<th><strong>判据</strong></th>
+<th><strong>空壳</strong></th>
+<th><strong>真频道表</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>content_length</code></td>
+<td>极小（本次 685 B）</td>
+<td>大，或显示为空（因 gzip 无法预知）</td>
+</tr>
+<tr>
+<td><code>content_encoding</code></td>
+<td>无</td>
+<td><code>gzip</code></td>
+</tr>
+<tr>
+<td>解压后搜关键字</td>
+<td>搜不到 <code>ChannelName</code></td>
+<td>能搜到 <code>CusetConfig('Channel'</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>决定性验证</strong>（对导出体做关键字检索）：</p>
+<pre><code># 从导出的响应体里搜频道表特征串
+grep -c &quot;CUSetConfig('Channel'&quot; _o20/getchannellistHWCU*.jsp
+# 输出：1（找到）表示真有频道数据；0 表示是空壳
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>本次实例的特殊之处</strong>：<code>tcp.stream==20</code> 这条流里，<br />
+<strong>同一条 URI 被请求了两次</strong> —— <code>101416</code> 返回 685 字节空壳，<br />
+<code>101448</code> 返回 gzip 真表。<br />
+<strong>只看到前一条就下结论“没抓到频道表”，是最常见的误判。</strong><br />
+必须把该流的<strong>所有响应</strong>列出来逐一判断。</p>
+</blockquote>
+<h3 id="63--schema"><strong>6.3 关键字段与 Schema</strong></h3>
+<p>频道表每条记录的字段（本运营商实测，共 25 个顶层字段，核心几个）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>字段</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>示例</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChannelID</code></td>
+<td>频道唯一 ID</td>
+<td><code>20000106</code></td>
+</tr>
+<tr>
+<td><code>ChannelName</code></td>
+<td>频道名</td>
+<td><code>CCTV-1高清</code></td>
+</tr>
+<tr>
+<td><code>UserChannelID</code></td>
+<td>台号</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>ChannelURL</code></td>
+<td>直播地址</td>
+<td><code>igmp://239.125.2.66:4120</code></td>
+</tr>
+<tr>
+<td><code>TimeShift</code></td>
+<td>是否支持回看（1=是）</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>TimeShiftLength</code></td>
+<td>回看时长（分钟）</td>
+<td><code>7200</code>（= 5 天）</td>
+</tr>
+<tr>
+<td><code>TimeShiftURL</code></td>
+<td>回看地址</td>
+<td><code>rtsp://.../xxx.smil?...</code></td>
+</tr>
+<tr>
+<td><code>IsHDChannel</code></td>
+<td>HD 标志（<strong>不可信</strong>，见 6.4）</td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>ChannelFCCIP/Port</code></td>
+<td>FCC 快速换台（本运营商为空）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>从响应体提取字段</strong>（导出体是文本，直接用文本工具处理）：</p>
+<pre><code># 每条频道的原始形态（在导出的 .jsp 响应体里）
+grep -o &quot;ChannelName=\&quot;[^\&quot;]*\&quot;&quot; _o20/getchannellistHWCU*.jsp | head -3
+</code></pre>
+<pre><code># 输出：
+ChannelName=&quot;CCTV-1高清&quot;
+ChannelName=&quot;CCTV-2高清&quot;
+ChannelName=&quot;CCTV-3高清&quot;
+</code></pre>
+<pre><code># 统计频道总数（每个频道一条 CUSetConfig 记录）
+grep -c &quot;CUSetConfig('Channel'&quot; _o20/getchannellistHWCU*.jsp
+# 输出：156
+</code></pre>
+<p><strong>组播规律</strong>：一频道一组播地址，端口固定，段内 IP 连续。<br />
+<code>ChannelURL</code> 里的 <code>igmp://</code> 是机顶盒的加入协议，实际传输是 UDP 承载 MPEG-TS。</p>
+<pre><code># 验证：从抓包中统计到底有几路组播在跑
+tshark -r X.pcap -Y &quot;udp &amp;&amp; ip.dst==239.125.0.0/16&quot; \
+       -T fields -e ip.dst 2&gt;/dev/null | sort -u | wc -l
+# 输出（本次实测）：5（抓包期间实际换过 5 个频道）
+
+# 看某一路组播的源（谁在发）
+tshark -r X.pcap -Y &quot;udp &amp;&amp; ip.dst==239.125.2.66&quot; \
+       -T fields -e ip.src -e udp.srcport -e ip.dst 2&gt;/dev/null | head -3
+# 输出：10.11.43.98  8054  239.125.2.66
+#        ↑ 源地址（运营商侧）  ↑ 源端口（随频道变）  ↑ 组播地址
+</code></pre>
+<h3 id="64-"><strong>6.4 常见误判与陷阱</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>#</strong></th>
+<th><strong>陷阱</strong></th>
+<th><strong>现象</strong></th>
+<th><strong>正确做法</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>-c</code> <strong>是“读取上限”</strong></td>
+<td><code>-c 30</code> 只读前 30 包 → 误判“一条都没抓到”</td>
+<td>要计数别用 <code>-c</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>BPF 按端口过滤</strong></td>
+<td>漏掉组播/非标准端口</td>
+<td>用 <code>ip or arp</code> 全抓，离线筛</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>导出对象不切流</strong></td>
+<td>只导出一个对象 / 跨流聚合</td>
+<td>先 <code>-Y &quot;tcp.stream==N&quot;</code> 切流</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>--export-objects</code> <strong>跨流聚合</strong></td>
+<td>同名对象被合并，误认为来自某条流</td>
+<td>导出结果不能反推“来自哪条流”</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>IsHDChannel</code> <strong>当高清判据</strong></td>
+<td>与频道名矛盾（高清频道标 SD）</td>
+<td>用**频道名是否含“高清”**判断</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>gzip 响应当乱码</strong></td>
+<td>导出内容不可读</td>
+<td>Wireshark「导出对象」<strong>自动解压</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>PSI 不校验 CRC32</strong></td>
+<td>把 ES 数据里的随机字节当 table_id，得出假频道表</td>
+<td>任何 PSI/私有 section 解析，<strong>必须 CRC32==0 校验</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>协议名字写错</strong></td>
+<td>查 MPEG-TS 用 <code>mpegts</code> 查不到</td>
+<td>tshark 里是 <code>MP2T</code>，字段 <code>mpeg_pat.*</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>VLAN 判断靠猜</strong></td>
+<td>—</td>
+<td><code>tshark -T fields -e vlan.id</code>，空 = 无 tag</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>忘记看接口链路状态</strong></td>
+<td>在 <code>NO-CARRIER</code> 口上“抓到”了流量</td>
+<td>先 <code>ip -br link</code> 确认 UP + carrier</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>第 10 条代价最大：<code>NO-CARRIER</code> 接口上“抓到”的流量全是<strong>交换机/网桥泛洪的镜像</strong>，<br />
+不是那条链路真实经过的流量。<strong>看到“抓到数据”不代表抓对了地方。</strong></p>
+</blockquote>
+<hr />
+<h2 id="heading-8"><strong>七、问题与解决方案</strong></h2>
+<p>按根因分类，便于定位同类问题。</p>
+<h3 id="71-"><strong>7.1 抓包点类（最高频）</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>问题</strong></th>
+<th><strong>现象</strong></th>
+<th><strong>根因</strong></th>
+<th><strong>解决</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>只能看到组播，无认证/频道表</td>
+<td>抓到大量 <code>239.x.x.x:4120</code>，HTTP 会话为 0</td>
+<td>抓包点在<strong>旁路</strong>，单播不经过</td>
+<td>移到链路中间（SPAN 或透明网桥）</td>
+</tr>
+<tr>
+<td>网桥上抓包漏单播</td>
+<td>抓 <code>br-iptv</code> 只看到部分流量</td>
+<td>bridge hairpin + <code>igmp_snooping=1</code> 在桥接层消费</td>
+<td><strong>抓物理成员口</strong>（如 <code>eth1</code>），不抓桥设备</td>
+</tr>
+<tr>
+<td>在错误接口上抓</td>
+<td>“抓到流量”但分析发现全是别的设备</td>
+<td><code>NO-CARRIER</code> 口上收到的是泛洪镜像</td>
+<td>先 <code>ip -br link</code> + <code>brctl showmacs</code> 确认</td>
+</tr>
+</tbody>
+</table>
+<p><strong>“抓物理口不抓桥设备”的对照验证</strong>：</p>
+<pre><code># 同一目标会话，在两个接口上分别统计，差异立现
+# ① 在物理成员口上：能看到完整的双向单播
+tshark -r physical.pcap -Y &quot;http.request&quot; -T fields -e frame.number | wc -l
+# 输出：若干条 HTTP 请求（控制面完整）
+
+# ② 在网桥设备上：会话被桥接层消费，只剩一部分
+tshark -r bridge.pcap -Y &quot;http.request&quot; -T fields -e frame.number | wc -l
+# 输出：明显更少，或为 0
+</code></pre>
+<p><strong>判断当前流量“到底是谁的”（识别泛洪镜像）</strong>：</p>
+<pre><code># 统计每个源 MAC 的包数，确认目标设备是否真的存在
+tshark -r X.pcap -T fields -e eth.src | sort | uniq -c | sort -rn | head -5
+# 若目标设备 MAC 完全没出现 → 你抓的是别人泛洪过来的镜像，抓包点错了
+</code></pre>
+<pre><code># 抓包时带上 -e 直接看链路层地址（tcpdump 的 -e 显示源/目的 MAC）
+tcpdump -i eth1 -nn -e -c 10
+</code></pre>
+<p>或者对已有 pcap 提取链路层地址（本次实测）：</p>
+<pre><code># -e eth.src -e eth.dst 同时输出源/目的 MAC，配合 ip 字段看归属
+tshark -r X.pcap -c 5 -T fields \
+       -e eth.src -e eth.dst -e ip.src -e ip.dst 2&gt;/dev/null
+</code></pre>
+<pre><code># 输出（本次实测）：
+0c:12:62:b4:f4:10  01:00:5e:7d:02:42  10.11.43.98  239.125.2.66
+0c:12:62:b4:f4:10  01:00:5e:7d:02:42  10.11.43.98  239.125.2.66
+</code></pre>
+<p><strong>怎么读</strong>：</p>
+<ul>
+<li>目的 MAC <code>01:00:5e:...</code> 是<strong>组播 MAC</strong>（IPv4 组播映射：<code>01:00:5e</code> + 地址低 23 位）；</li>
+<li>源 MAC 是光猫 <code>0c:12:62:b4:f4:10</code>，说明<strong>这路组播是运营商侧推过来的</strong>；</li>
+<li>若源 MAC 是机顶盒，说明方向相反。</li>
+</ul>
+<blockquote>
+<p>:warning: <strong>本次踩过的坑</strong>：多个 IP（运营商网关 <code>172.203.68.1</code>、业务地址 <code>10.11.43.98</code>、<br />
+门户地址）<strong>共享同一个源 MAC</strong>，都来自光猫。<br />
+如果不看 MAC，会误以为 <code>10.11.43.98</code> 是机顶盒的地址 —— 实际它是<strong>光猫持有的业务地址</strong>。<br />
+<strong>抓包必须看 MAC，分析前先确认每个 IP 的真实归属。</strong></p>
+</blockquote>
+<h3 id="72-"><strong>7.2 工具类</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>问题</strong></th>
+<th><strong>根因</strong></th>
+<th><strong>解决</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wireshark sshdump 用不了</td>
+<td>远端无 <code>dumpcap</code></td>
+<td>远端 <code>tcpdump -w -</code> + SSH 流式接回本地</td>
+</tr>
+<tr>
+<td>无法安装抓包工具</td>
+<td>精简固件包管理器源为空</td>
+<td>用固件自带的 <code>tcpdump</code></td>
+</tr>
+<tr>
+<td>SFTP 拉不了文件</td>
+<td>dropbear 无 sftp 子系统</td>
+<td><code>exec_command('dd if=...')</code> 流式下载</td>
+</tr>
+<tr>
+<td><code>-i any</code> 抓包失败</td>
+<td>某些内核不支持任意接口的混杂模式</td>
+<td>指定真实接口名</td>
+</tr>
+<tr>
+<td>pcap 尾部截断</td>
+<td>kill 时缓冲区未写完</td>
+<td><code>capinfos</code> 会提示，通常可分析；必要时用 editcap 修复</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-"><strong>7.3 业务/会话类</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>问题</strong></th>
+<th><strong>现象</strong></th>
+<th><strong>根因</strong></th>
+<th><strong>解决</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>频道接口返回 302 → 超时页</td>
+<td><code>Category.jsp</code> 无限跳转 <code>SessionTimeOut</code></td>
+<td><strong>会话已过期</strong>（抓包起点在认证之后）</td>
+<td>覆盖完整开机流程重抓</td>
+</tr>
+<tr>
+<td>DHCP 反复 <code>NAK</code></td>
+<td>机顶盒请求被拒</td>
+<td>旁路抓包只看到片段，<strong>误判</strong>为业务退订</td>
+<td>修正抓包点后一次成功</td>
+</tr>
+</tbody>
+</table>
+<h3 id="74-"><strong>7.4 数据类（最隐蔽）</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>问题</strong></th>
+<th><strong>现象</strong></th>
+<th><strong>根因</strong></th>
+<th><strong>解决</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>抓到 200 但无频道数据</strong></td>
+<td>频道接口响应体极小，<code>ChannelCount: 0</code></td>
+<td>服务器回了<strong>空壳</strong>，依赖前序会话；令牌失效或时序不对</td>
+<td>确认认证链完整；必要时重抓</td>
+</tr>
+<tr>
+<td>解析器“算出 0 频道”</td>
+<td>用工具跑 pcap 得 0</td>
+<td><strong>包里根本没有数据</strong>，不是解析器的锅</td>
+<td>先用工具自身函数端到端验证，确认包内是否有数据</td>
+</tr>
+<tr>
+<td>假频道表</td>
+<td>解析出大量“频道”，实为垃圾</td>
+<td>PSI 未做 CRC 校验</td>
+<td>加 CRC32==0 校验</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>通用教训</strong>：抓包类问题<strong>必须用端到端验证</strong>。<br />
+在没跑真实解析代码前，凭“预览片段”或“既有产物”反推包内容，极易得出错误结论。</p>
+</blockquote>
+<h3 id="75-"><strong>7.5 认知类（代价最大）</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>误判</strong></th>
+<th><strong>真相</strong></th>
+<th><strong>教训</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>把人为改过的 MAC 当成“实物对应”</td>
+<td>是用户自己改的，制造了假证据</td>
+<td><strong>看到地址吻合，先确认设备状态</strong></td>
+</tr>
+<tr>
+<td>把光猫发出的帧当成“机顶盒业务”</td>
+<td>多个 IP 共享同一源 MAC（都来自光猫）</td>
+<td><strong>抓包必须带</strong> <code>-e</code> <strong>看 MAC</strong>；分析前确认每个 IP 的真实归属</td>
+</tr>
+<tr>
+<td>凭印象判断运营商</td>
+<td>地址段归属需查证</td>
+<td><strong>运营商判断不能凭印象</strong></td>
+</tr>
+<tr>
+<td>假设流量走 WAN</td>
+<td>路由表一行就写明了走哪个接口</td>
+<td><strong>抓包前先读路由表</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="heading-9"><strong>八、经验沉淀</strong></h2>
+<h3 id="81-"><strong>8.1 通用方法论（可迁移到任何抓包场景）</strong></h3>
+<p><strong>A. 抓包点决策树</strong>（见 2.3）</p>
+<p><strong>B. 抓包前自检 Checklist</strong></p>
+<ol>
+<li><code>ip -br link</code>：目标口是否 <strong>UP 且有 carrier</strong>（别栽在 <code>NO-CARRIER</code>）；</li>
+<li>若用网桥：<code>brctl showmacs &lt;bridge&gt;</code> 是否<strong>两条腿都学到 MAC</strong>；</li>
+<li><code>bridge-nf-call-*</code> 是否全 0 / 未加载；</li>
+<li>抓包机自己<strong>会不会抢答</strong>目标段的 DHCP（别干扰被测设备）；</li>
+<li>BPF 是否<strong>过窄</strong>（宁可全抓，离线筛）。</li>
+</ol>
+<p><strong>C. 分析流程（通用）</strong></p>
+<pre><code>体检 → 谁在说话 → 按协议分组 → 锁关键流 → 切流导出 → 解析清单
+</code></pre>
+<p><strong>D. “如果重来一次”的最短路径</strong></p>
+<ol>
+<li>先确认桥通（或 SPAN 起了）→ 2. 全抓覆盖完整开机 → 3. 找控制面里的“列表/配置”接口<br />
+→ 4. 切流导出 → 5. 解析成 m3u8。<strong>不再走“旁路试错”的弯路。</strong></li>
+</ol>
+<p><strong>E. 三条铁律</strong></p>
+<ol>
+<li><strong>抓不到单播 ≠ 工具问题，而是抓包点位置问题</strong>；</li>
+<li><strong>解析前必须先证明包里有数据</strong>（端到端验证）；</li>
+<li><strong>PSI/section 解析没有 CRC 校验 = 输出不可信</strong>。</li>
+</ol>
+<h3 id="82-"><strong>8.2 本项目专属经验</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>经验</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>透明网桥可零成本替代 SPAN</td>
+<td>软路由做 in-line 网桥，单播必然穿透</td>
+</tr>
+<tr>
+<td>华为 CU 体系里 <code>getchannellistHWCU.jsp</code> 比 <code>Category.jsp</code> 更直接</td>
+<td>后者可能因会话过期返回 302</td>
+</tr>
+<tr>
+<td>认证链是“表单自动提交”串联</td>
+<td>必须完整覆盖，缺一环即无数据</td>
+</tr>
+<tr>
+<td><code>Authenticator</code> 由机顶盒本地算出</td>
+<td><strong>无法离线复算</strong>，只能抓原包</td>
+</tr>
+<tr>
+<td>一频道一组播地址</td>
+<td>频道数 == 唯一组播地址数</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="heading-10"><strong>九、产物清单</strong></h2>
+<h3 id="91-"><strong>9.1 产物层级与来源</strong></h3>
+<p><strong>关键区分：哪些是“直接拿到”的原始证据，哪些是“经过转换”的成品。</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>产物</strong></th>
+<th><strong>来源</strong></th>
+<th><strong>性质</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>X.pcap</code></td>
+<td><strong>直接抓到</strong></td>
+<td>原始证据</td>
+<td>抓包本体，体积大、一次性</td>
+</tr>
+<tr>
+<td><code>_o20/</code>（HTTP 对象）</td>
+<td><strong>直接导出</strong></td>
+<td>原始证据</td>
+<td>频道表原始响应体（已解压）</td>
+</tr>
+<tr>
+<td><code>channels.csv</code></td>
+<td>解析转换</td>
+<td>中间成品</td>
+<td>给人看的结构化清单</td>
+</tr>
+<tr>
+<td><code>channels.m3u8</code></td>
+<td>解析转换</td>
+<td>★ <strong>交付物</strong></td>
+<td>播放器可用（<code>rtp://</code>，组播）</td>
+</tr>
+<tr>
+<td><code>utm.m3u8</code></td>
+<td><strong>二次转换</strong></td>
+<td>★ <strong>交付物</strong></td>
+<td>从<strong>原始响应体</strong>重建，含回看/分组元数据</td>
+</tr>
+<tr>
+<td><code>channels_http.m3u</code></td>
+<td><strong>二次转换</strong>（转封装）</td>
+<td>★★ <strong>交付物</strong></td>
+<td>PC 可直接播（见 9.2）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意</strong>：<code>channels.csv</code> 是<strong>有损投影</strong>（丢失了 FCC、FEC、部分元数据）。<br />
+需要完整字段时应<strong>从</strong> <code>_o20/</code> <strong>原始响应体重建</strong>，而不是从 CSV 反推。</p>
+</blockquote>
+<h3 id="92--http"><strong>9.2 交付层：从组播到 HTTP</strong></h3>
+<p><code>channels.m3u8</code> 里是 <code>rtp://239.x.x.x:4120</code>，这是 <strong>RTP over UDP 组播</strong>。<br />
+PC 播放器的处境：</p>
+<table>
+<thead>
+<tr>
+<th><strong>限制</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>组播不跨网段</td>
+<td>播放器不在 IPTV 组播域内就收不到</td>
+</tr>
+<tr>
+<td>多播路由未开</td>
+<td>桌面系统默认不加入组播组</td>
+</tr>
+<tr>
+<td>播放器兼容性</td>
+<td>部分播放器对组播支持不稳</td>
+</tr>
+</tbody>
+</table>
+<p><strong>解决方式：在 IPTV 组播可达的设备上做转封装</strong>（RTP → HTTP 单播）：</p>
+<pre><code>rtp://239.125.2.66:4120  ──转封装──▶  http://&lt;host&gt;:&lt;port&gt;/rtp/239.125.2.66/4120
+        （组播）                              （HTTP 单播，PC 可直接播）
+</code></pre>
+<p><strong>关键前提</strong>：转封装程序<strong>必须运行在 IPTV 组播可达的设备上</strong>（通常是那台软路由），<br />
+跑在普通 PC/内网上则收不到组播，转出来也是黑的。</p>
+<p><strong>原则</strong>：只做 <strong>remux（</strong><code>-c copy</code><strong>）不做转码</strong>。IPTV 是 MPEG-TS，转码等于自找 CPU 瓶颈。</p>
+<blockquote>
+<p>本次已具备该层能力（<code>channels_http.m3u</code> 由转封装工具生成），<br />
+但其部署细节属于另一主题，本文不展开。</p>
+</blockquote>
+<hr />
+<h2 id="heading-11"><strong>十、时效性与复现边界</strong></h2>
+<p><strong>这一章决定了产物能用多久、能不能“重算”出来。</strong></p>
+<h3 id="101-"><strong>10.1 令牌有效期</strong></h3>
+<ul>
+<li>频道表与回看 URL 内嵌 <strong>session 令牌</strong>（播放参数中含 <code>GuardEncType=2</code> 的签名串）；</li>
+<li><strong>有效期约 1 小时</strong>（实测 <code>tokenExpiredTime</code> = 抓包时间 + 1h）；</li>
+<li><strong>过期后回看 URL 失效</strong>，需重抓。</li>
+</ul>
+<h3 id="102-"><strong>10.2 为什么不能“算出来”</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>环节</strong></th>
+<th><strong>能否离线复现</strong></th>
+<th><strong>原因</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>频道表字段解析</td>
+<td>:check_mark_button: 可以</td>
+<td>纯文本解析，脚本可复跑</td>
+</tr>
+<tr>
+<td>回看 URL 生成</td>
+<td>:cross_mark: 不可以</td>
+<td><code>accountinfo</code> 是<strong>服务器签名的令牌</strong></td>
+</tr>
+<tr>
+<td>认证 <code>Authenticator</code></td>
+<td>:cross_mark: 不可以</td>
+<td><strong>由机顶盒本地固件算出</strong>（一长串加密值），无法离线复算</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论：频道表不能“重构”，只能在机顶盒重新认证时“抓出来”。</strong></p>
+<h3 id="103-"><strong>10.3 刷新流程（令牌过期后）</strong></h3>
+<pre><code>1. 在正确的抓包点上开始抓包
+2. 断电重启机顶盒（触发重新认证）
+3. 确认认证链完整（isSucessed=true）
+4. 导出频道表响应体
+5. 重新解析 → 重新生成播放列表
+</code></pre>
+<p><strong>刷新成本很低</strong>：抓包点配好后，全程约 6 分钟（一次完整开机窗口）。</p>
+<hr />
+<h2 id="-a"><strong>附录 A：术语表</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>术语</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>单播（Unicast）</strong></td>
+<td>一对一通信，只有收发双方能看到</td>
+</tr>
+<tr>
+<td><strong>组播（Multicast）</strong></td>
+<td>一对多，加入组播组的设备都能收到（IPTV 直播用这个）</td>
+</tr>
+<tr>
+<td><strong>广播（Broadcast）</strong></td>
+<td>一对全体，同一广播域内所有设备都收到</td>
+</tr>
+<tr>
+<td><strong>SPAN / 端口镜像</strong></td>
+<td>交换机把指定端口的流量复制一份到另一个端口</td>
+</tr>
+<tr>
+<td><strong>透明网桥</strong></td>
+<td>二层转发设备，对两端主机“不可见”，不做三层路由</td>
+</tr>
+<tr>
+<td><strong>IGMP snooping</strong></td>
+<td>交换机/网桥按需转发组播的优化，<strong>抓包时应关闭</strong></td>
+</tr>
+<tr>
+<td><strong>DHCP</strong></td>
+<td>自动分配 IP 地址的协议（<code>Discover→Offer→Request→ACK</code>）</td>
+</tr>
+<tr>
+<td><strong>RTP / RTSP</strong></td>
+<td>实时传输协议 / 实时流控制协议（直播 / 回看）</td>
+</tr>
+<tr>
+<td><strong>MPEG-TS</strong></td>
+<td>数字电视传输流格式（IPTV 实际承载的内容）</td>
+</tr>
+<tr>
+<td><strong>PSI / PAT / PMT / SDT</strong></td>
+<td>传输流里的节目信息表；<strong>SDT 含频道名</strong></td>
+</tr>
+<tr>
+<td><strong>FCC</strong></td>
+<td>快速频道切换（运营商侧加速手段，非所有运营商都提供）</td>
+</tr>
+<tr>
+<td><strong>FEC</strong></td>
+<td>前向纠错（抗丢包）</td>
+</tr>
+<tr>
+<td><strong>m3u8</strong></td>
+<td>播放列表格式（文本，逐行描述频道与地址）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-b"><strong>附录 B：参数快照（复现参考）</strong></h2>
+<h3 id="b1-iptv-"><strong>B.1 IPTV 服务器角色与地址</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>用途</strong></th>
+<th><strong>地址（脱敏）</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ACS / TR-069</td>
+<td><code>10.11.x.x:37021</code></td>
+</tr>
+<tr>
+<td>EDS 认证</td>
+<td><code>10.11.x.x:8082</code></td>
+</tr>
+<tr>
+<td>EPG 门户（轮询池）</td>
+<td><code>10.11.x.x:33200</code>（多个，同一时间只用一个）</td>
+</tr>
+<tr>
+<td>业务门户</td>
+<td><code>172.25.x.x:*</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="b2-"><strong>B.2 网络参数</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>项</strong></th>
+<th><strong>值</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IPTV 网关</td>
+<td><code>172.203.x.1</code></td>
+</tr>
+<tr>
+<td>机顶盒 IPTV 侧地址</td>
+<td><code>172.203.x.x</code></td>
+</tr>
+<tr>
+<td>组播段</td>
+<td><code>239.125.x.x</code></td>
+</tr>
+<tr>
+<td>端口</td>
+<td><code>4120</code>（主流）/ <code>4130</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="b3-"><strong>B.3 频道表字段（核心）</strong></h3>
+<pre><code>ChannelID / ChannelName / UserChannelID / ChannelURL(igmp://...) /
+TimeShift / TimeShiftLength / TimeShiftURL(rtsp://...) / IsHDChannel
+</code></pre>
+<h3 id="b4-"><strong>B.4 命令速查（按场景分组）</strong></h3>
+<blockquote>
+<p>环境前提见 3.4。占位符：<code>&lt;iface&gt;</code> 接口 / <code>&lt;bridge&gt;</code> 网桥 / <code>X.pcap</code> 文件 /<br />
+<code>&lt;N&gt;</code> 流号。<strong>加粗</strong>的为关键命令。</p>
+</blockquote>
+<h4 id="heading-12"><strong>【抓包前】确认链路与抓包点</strong></h4>
+<pre><code># 接口是否有载波（★ NO-CARRIER 是最常见的&quot;抓不到&quot;原因）
+ip -br link show &lt;iface&gt;
+
+# 网桥转发表：两条腿都要有外部 MAC（is local? = no）
+brctl showmacs &lt;bridge&gt;
+
+# 网桥 IGMP snooping 是否已关（应为 0）
+cat /sys/class/net/&lt;bridge&gt;/bridge/multicast_snooping
+
+# bridge-nf 三开关（全 0 或 NA 都算通过）
+for f in iptables ip6tables arptables; do
+  printf '%s = ' &quot;$f&quot;; cat /proc/sys/net/bridge/bridge-nf-call-$f 2&gt;/dev/null || echo NA
+done
+
+# 抓包机自己是否在抢答 DHCP（应无 67 端口监听，避免干扰被测设备）
+ss -lunp | grep ':67'
+</code></pre>
+<h4 id="heading-13"><strong>【抓包】执行与接回</strong></h4>
+<pre><code># 本地抓包（路由器上直接执行）
+tcpdump -i &lt;iface&gt; -nn -U -s 0 -w out.pcap &quot;ip or arp&quot;
+
+# 远端抓 + 流式接回本地（-T 禁用伪终端，否则 pcap 会被 \r\n 污染）
+ssh -T root@&lt;router&gt; &quot;tcpdump -i &lt;iface&gt; -nn -U -s 0 -w - 'ip or arp'&quot; &gt; out.pcap
+</code></pre>
+<h4 id="heading-14"><strong>【分析】体检与流量构成</strong></h4>
+<pre><code># ★ 体检：包数 / 时长 / 接口封装 / 哈希
+capinfos X.pcap
+
+# ★ 源 MAC 分布（目标设备必须出现）
+tshark -r X.pcap -T fields -e eth.src 2&gt;/dev/null | sort | uniq -c | sort -rn
+
+# 协议分层（看是否含 mp2t = MPEG-TS）
+tshark -r X.pcap -q -z io,phs 2&gt;/dev/null
+
+# 链路层 + IP 归属（判断每个 IP 的真实来源）
+tshark -r X.pcap -c 5 -T fields -e eth.src -e eth.dst -e ip.src -e ip.dst 2&gt;/dev/null
+</code></pre>
+<h4 id="heading-15"><strong>【分析】按协议细查</strong></h4>
+<pre><code># DHCP 链（option.dhcp: 1=Discover 2=Offer 3=Request 5=ACK 6=NAK）
+tshark -r X.pcap -Y &quot;bootp&quot; -T fields \
+       -e frame.number -e ip.src -e ip.dst -e bootp.option.dhcp 2&gt;/dev/null
+
+# 全部 HTTP 请求（定位目标接口）
+tshark -r X.pcap -Y &quot;http.request&quot; -T fields \
+       -e frame.number -e ip.dst -e tcp.dstport -e http.request.method \
+       -e http.request.uri 2&gt;/dev/null
+
+# 是否有 VLAN tag（空 = 无 tag）
+tshark -r X.pcap -T fields -e vlan.id 2&gt;/dev/null | sort -u
+
+# 组播地址去重统计（实际有几路在跑）
+tshark -r X.pcap -Y &quot;udp &amp;&amp; ip.dst==&lt;mcast-prefix&gt;/16&quot; \
+       -T fields -e ip.dst 2&gt;/dev/null | sort -u | wc -l
+
+# 某一路组播的源（谁在发）
+tshark -r X.pcap -Y &quot;udp &amp;&amp; ip.dst==&lt;mcast-addr&gt;&quot; \
+       -T fields -e ip.src -e udp.srcport -e ip.dst 2&gt;/dev/null | head -3
+</code></pre>
+<h4 id="heading-16"><strong>【定位】找关键流（不要硬编码流号）</strong></h4>
+<pre><code># ★ 按 URI 关键字反查流号（换一份 pcap 流程不变）
+tshark -r X.pcap -Y 'http.request.uri contains &quot;&lt;uri-keyword&gt;&quot;' \
+       -T fields -e frame.number -e tcp.stream -e ip.dst -e http.request.uri 2&gt;/dev/null
+</code></pre>
+<h4 id="heading-17"><strong>【核查】确认响应是否真有数据</strong></h4>
+<pre><code># ★ 列出该流所有响应：状态码 / 长度 / 是否 gzip
+#   长度极小且无 gzip = 空壳；有 gzip = 可能是真数据
+tshark -r X.pcap -Y &quot;tcp.stream==&lt;N&gt; &amp;&amp; http.response&quot; -T fields \
+       -e frame.number -e http.response.code -e http.content_length \
+       -e http.content_encoding 2&gt;/dev/null
+</code></pre>
+<h4 id="heading-18"><strong>【导出】切流与导出对象</strong></h4>
+<pre><code># 切出单条流
+tshark -r X.pcap -Y &quot;tcp.stream==&lt;N&gt;&quot; -w _s&lt;N&gt;.pcap
+
+# ★ 导出 HTTP 对象（自动解压 gzip）
+tshark -q -r _s&lt;N&gt;.pcap --export-objects http,_o&lt;N&gt;
+</code></pre>
+<h4 id="heading-19"><strong>【解析】从导出体抽字段</strong></h4>
+<pre><code># 统计频道总数
+grep -c &quot;CUSetConfig('Channel'&quot; _o&lt;N&gt;/&lt;file&gt;.jsp
+
+# 抽取频道名
+grep -o &quot;ChannelName=\&quot;[^\&quot;]*\&quot;&quot; _o&lt;N&gt;/&lt;file&gt;.jsp | head -5
+
+# 抽取组播地址
+grep -o &quot;ChannelURL=\&quot;[^\&quot;]*\&quot;&quot; _o&lt;N&gt;/&lt;file&gt;.jsp | head -5
+</code></pre>
+<h4 id="heading-20"><strong>【校验】文件完整性</strong></h4>
+<pre><code> # 校验哈希（与预期值比对，确认文件未损坏）
+ sha256sum X.pcap
+ ​
+ # 修复尾部截断（若有 malformed 包）
+ editcap X.pcap X_fixed.pcap
+</code></pre>
+
+            </div>
+
+</article>
+
+
+
+
+
+
+<div class="mod-post__poster">
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Reading Progress Component -->
+<div class="reading-progress-container">
+  <span class="reading-label">阅读进度</span>
+  <span class="reading-value">0%</span>
+  <svg class="progress-ring" viewBox="0 0 24 24">
+    <!-- Background Circle -->
+    <circle class="progress-ring__circle-bg" stroke-width="3" fill="transparent" r="10" cx="12" cy="12" />
+    <!-- Progress Circle -->
+    <circle class="progress-ring__circle" stroke-width="3" fill="transparent" r="10" cx="12" cy="12" />
+  </svg>
+</div>
+<footer id="footer" class="footer">
+    <nav>
+        
+        
+        <a class="menu-item" href="/">首页</a>
+        
+         · 
+        <a class="menu-item" href="/post">博客</a>
+        
+         · 
+        <a class="menu-item" href="/memos">闪念</a>
+        
+         · 
+        <a class="menu-item" href="/archives">归档</a>
+        
+         · 
+        <a class="menu-item" href="/tags">标签</a>
+        
+         · 
+        <a class="menu-item" href="/links">友链</a>
+        
+         · 
+        <a class="menu-item" href="/post/about">关于</a>
+        
+    </nav>
+
+    <div class="Copyright">Copyright &copy; <span class="current-year"></span> <a href="https://cocolight.github.io">惊鸿一瞥</a></div>
+    <script>document.querySelector('.current-year').textContent = new Date().getFullYear();</script>
+
+    <div class="index_footer">
+        Powered by Gridea Pro ·
+        <a class="rss" href="/feed.xml" target="_blank" rel="noopener noreferrer">
+            <i class="ri-rss-line"></i>RSS
+        </a>
+    </div>
+</footer>
+
+
+
+
+    
+
+    
+<script>console.log("\n%c ✦ Gridea Pro v1.3.0-beta.2 %c · Theme: amore-jinja2 v1.1.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+
+</html>

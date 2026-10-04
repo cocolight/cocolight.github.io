@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+<meta name="viewport"
+    content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, width=device-width" />
+<meta name="renderer" content="webkit">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
+
+
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#292a2d" media="(prefers-color-scheme: dark)">
+
+
+<link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/cocolight/cocolight.github.io@master/media/images/favicon.ico">
+<link rel="stylesheet" href="/styles/main.min.css">
+
+
+<style>:root{--accent-color:#28df99;}</style>
+
+
+<script>
+    // 自动为所有 target="_blank" 的链接添加 rel="noopener noreferrer"
+    document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('a[target="_blank"]');
+        links.forEach(function (link) {
+            var rel = link.getAttribute('rel') || '';
+            if (rel.indexOf('noopener') === -1) {
+                rel += ' noopener';
+            }
+            if (rel.indexOf('noreferrer') === -1) {
+                rel += ' noreferrer';
+            }
+            link.setAttribute('rel', rel.trim());
+        });
+    });
+</script>
+
+<script>
+    // declaraction of document.ready() function.
+    (function () {
+        var ie = !!(window.attachEvent && !window.opera);
+        var wk = /webkit\/(\d+)/i.test(navigator.userAgent) && (RegExp.$1 < 525);
+        var fn = [];
+        var run = function () {
+            for (var i = 0; i < fn.length; i++) fn[i]();
+        };
+        var d = document;
+        d.ready = function (f) {
+            if (!ie && !wk && d.addEventListener)
+                return d.addEventListener('DOMContentLoaded', f, false);
+            if (fn.push(f) > 1) return;
+            if (ie)
+                (function () {
+                    try {
+                        d.documentElement.doScroll('left');
+                        run();
+                    } catch (err) {
+                        setTimeout(arguments.callee, 0);
+                    }
+                })();
+            else if (wk)
+                var t = setInterval(function () {
+                    if (/^(loaded|complete)$/.test(d.readyState))
+                        clearInterval(t), run();
+                }, 0);
+        };
+    })();
+
+
+    document.ready(
+        function () {
+            var _Blog = window._Blog || {};
+
+            const getSystemTheme = () => {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return 'dark';
+                }
+                return 'light';
+            };
+
+            const configDefault = 'dark';
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+            const initialTheme = currentTheme || configDefault || getSystemTheme();
+            const isDark = initialTheme === 'dark';
+
+            const updateButtons = (dark) => {
+                const sunBtn = document.getElementById("theme-toggle-sun");
+                const moonBtn = document.getElementById("theme-toggle-moon");
+                const mobileSunBtn = document.getElementById("mobile-theme-toggle-sun");
+                const mobileMoonBtn = document.getElementById("mobile-theme-toggle-moon");
+
+                if (dark) {
+                    if (sunBtn) sunBtn.style.display = 'none';
+                    if (moonBtn) moonBtn.style.display = 'inline-block';
+                    if (mobileSunBtn) mobileSunBtn.style.display = 'none';
+                    if (mobileMoonBtn) mobileMoonBtn.style.display = 'inline-block';
+                } else {
+                    if (sunBtn) sunBtn.style.display = 'inline-block';
+                    if (moonBtn) moonBtn.style.display = 'none';
+                    if (mobileSunBtn) mobileSunBtn.style.display = 'inline-block';
+                    if (mobileMoonBtn) mobileMoonBtn.style.display = 'none';
+                }
+            };
+
+            const updateThemeColor = (dark) => {
+                const themeColor = dark ? '#292a2d' : '#ffffff';
+                const metaTags = document.querySelectorAll('meta[name="theme-color"]');
+                if (metaTags.length > 0) {
+                    // 保留第一个，移除其他的，避免重复
+                    for (let i = 1; i < metaTags.length; i++) {
+                        metaTags[i].remove();
+                    }
+                    metaTags[0].setAttribute('content', themeColor);
+                    metaTags[0].removeAttribute('media');
+                } else {
+                    const meta = document.createElement('meta');
+                    meta.name = 'theme-color';
+                    meta.content = themeColor;
+                    document.head.appendChild(meta);
+                }
+            };
+
+            const applyTheme = (dark) => {
+                const body = document.getElementsByTagName('body')[0];
+                if (dark) {
+                    body.classList.add('dark-theme');
+                } else {
+                    body.classList.remove('dark-theme');
+                }
+                updateButtons(dark);
+                updateThemeColor(dark);
+            };
+
+            // Initial application
+            applyTheme(isDark);
+            if (!currentTheme) {
+                window.localStorage && window.localStorage.setItem('theme', initialTheme);
+            }
+
+            _Blog.toggleTheme = function () {
+                const toggleFunc = (e) => {
+                    // Prevent bubbling if needed, though buttons are distinct now
+                    if (e) e.stopPropagation();
+
+                    const body = document.getElementsByTagName('body')[0];
+                    const isCurrentlyDark = body.classList.contains('dark-theme');
+
+                    if (isCurrentlyDark) {
+                        body.classList.remove('dark-theme');
+                        updateButtons(false);
+                        window.localStorage && window.localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.add('dark-theme');
+                        updateButtons(true);
+                        window.localStorage && window.localStorage.setItem('theme', 'dark');
+                    }
+                };
+
+                const sunBtn = document.getElementById("theme-toggle-sun");
+                const moonBtn = document.getElementById("theme-toggle-moon");
+                const mobileSunBtn = document.getElementById("mobile-theme-toggle-sun");
+                const mobileMoonBtn = document.getElementById("mobile-theme-toggle-moon");
+
+                if (sunBtn) sunBtn.addEventListener('click', toggleFunc);
+                if (moonBtn) moonBtn.addEventListener('click', toggleFunc);
+                if (mobileSunBtn) mobileSunBtn.addEventListener('click', toggleFunc);
+                if (mobileMoonBtn) mobileMoonBtn.addEventListener('click', toggleFunc);
+            };
+            _Blog.toggleTheme();
+
+            if (window.matchMedia && !configDefault) {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                    const newTheme = e.matches ? 'dark' : 'light';
+                    applyTheme(e.matches);
+                    window.localStorage && window.localStorage.setItem('theme', newTheme);
+                });
+            }
+        }
+    );
+</script>
+
+<script>
+    // Reading Progress Component
+    document.addEventListener('DOMContentLoaded', () => {
+        const progressValue = document.querySelector('.reading-value');
+        const progressCircle = document.querySelector('.progress-ring__circle');
+        const container = document.querySelector('.reading-progress-container');
+
+        // Exit if elements don't exist (e.g., not on a post page)
+        if (!progressValue || !progressCircle || !container) {
+            return;
+        }
+
+        // SVG Circle setup
+        const radius = progressCircle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const safePercent = Math.min(100, Math.max(0, percent));
+            progressValue.textContent = `${Math.round(safePercent)}%`;
+            const offset = circumference - (safePercent / 100) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        function onScroll() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+            if (scrollHeight <= 0) {
+                setProgress(0);
+                return;
+            }
+
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            setProgress(scrollPercent);
+
+            // Show/Hide logic: Show if scrolled more than 100px
+            if (scrollTop > 100) {
+                container.classList.add('show');
+            } else {
+                container.classList.remove('show');
+            }
+        }
+
+        // Initialize
+        onScroll();
+
+        // Listen for scroll events
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // Recalculate on resize
+        window.addEventListener('resize', onScroll);
+    });
+</script>
+
+
+
+
+
+
+
+    <meta name="generator" content="Gridea Pro 1.3.0-beta.2">
+    <title>华为CU接口速查-脱敏版 | 惊鸿一瞥</title>
+
+    
+<meta name="description" content="华为 CU 体系接口速查（IPTV 认证 / EPG / 频道表）· 脱敏版 CU = China Unicom（联通）定制，跑在华为 IPTV 机顶盒（EC6109U 系列）上的 EPG + 认证体系。 本文全部字段/值取自一次 eth1 透明网桥抓包（eth1_stb_&amp;lt;日期&amp;gt;.pcap，TCP stream 20）， 帧号、参数、Token 均可&amp;hellip;">
+<link rel="canonical" href="https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"华为CU接口速查-脱敏版","url":"https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/","description":"华为 CU 体系接口速查（IPTV 认证 / EPG / 频道表）· 脱敏版 CU = China Unicom（联通）定制，跑在华为 IPTV 机顶盒（EC6109U 系列）上的 EPG + 认证体系。 本文全部字段/值取自一次 eth1 透明网桥抓包（eth1_stb_\u0026lt;日期\u0026gt;.pcap，TCP stream 20）， 帧号、参数、Token 均可\u0026hellip;","datePublished":"2026-10-05T02:55:26+08:00","dateModified":"2026-10-04T19:02:42+08:00","author":{"@type":"Person","name":"惊鸿一瞥"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/images/avatar.png"},"name":"惊鸿一瞥"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://cocolight.github.io","name":"惊鸿一瞥","position":1},{"@type":"ListItem","item":"https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/","name":"华为CU接口速查-脱敏版","position":2}]}</script>
+<meta property="og:title" content="华为CU接口速查-脱敏版">
+<meta property="og:description" content="华为 CU 体系接口速查（IPTV 认证 / EPG / 频道表）· 脱敏版 CU = China Unicom（联通）定制，跑在华为 IPTV 机顶盒（EC6109U 系列）上的 EPG + 认证体系。 本文全部字段/值取自一次 eth1 透明网桥抓包（eth1_stb_&amp;lt;日期&amp;gt;.pcap，TCP stream 20）， 帧号、参数、Token 均可&amp;hellip;">
+<meta property="og:url" content="https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="惊鸿一瞥">
+<meta property="og:image" content="/images/avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/">
+<meta name="twitter:title" content="华为CU接口速查-脱敏版">
+<meta name="twitter:description" content="华为 CU 体系接口速查（IPTV 认证 / EPG / 频道表）· 脱敏版 CU = China Unicom（联通）定制，跑在华为 IPTV 机顶盒（EC6109U 系列）上的 EPG + 认证体系。 本文全部字段/值取自一次 eth1 透明网桥抓包（eth1_stb_&amp;lt;日期&amp;gt;.pcap，TCP stream 20）， 帧号、参数、Token 均可&amp;hellip;">
+<meta name="twitter:image" content="/images/avatar.png">
+</head>
+
+<body class="">
+
+    
+<script>
+    (function () {
+        const getSystemTheme = () => {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
+        };
+
+        const configDefault = 'dark';
+        const savedTheme = localStorage.getItem('theme');
+        const theme = savedTheme || configDefault || getSystemTheme();
+
+        if (theme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        if (!savedTheme) {
+            localStorage.setItem('theme', theme);
+        }
+    })();
+</script>
+<header class="mod-head">
+    <div class="mod-head__left">
+        <div class="mod-head__logo">
+            <a href="/">
+                
+                <img class="avatar" alt="avatar" src="https://cdn.jsdelivr.net/gh/cocolight/cocolight.github.io@master/images/avatar.png">
+                
+            </a>
+        </div>
+    </div>
+
+    <div class="mod-head__right">
+        <span>
+            <button id="theme-toggle-sun" class="tiptap-button theme-toggle-sun" aria-label="Switch to dark mode">
+                <svg width="18" height="18" class="tiptap-button-icon" viewBox="0 0 24 24" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 1C12.5523 1 13 1.44772 13 2V4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4V2C11 1.44772 11.4477 1 12 1Z"
+                        fill="currentColor"></path>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M13 20C13 19.4477 12.5523 19 12 19C11.4477 19 11 19.4477 11 20V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V20Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M4.22282 4.22289C4.61335 3.83236 5.24651 3.83236 5.63704 4.22289L7.04704 5.63289C7.43756 6.02341 7.43756 6.65658 7.04704 7.0471C6.65651 7.43762 6.02335 7.43762 5.63283 7.0471L4.22282 5.6371C3.8323 5.24658 3.8323 4.61341 4.22282 4.22289Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M18.367 16.9529C17.9765 16.5623 17.3433 16.5623 16.9528 16.9529C16.5623 17.3434 16.5623 17.9766 16.9528 18.3671L18.3628 19.7771C18.7533 20.1676 19.3865 20.1676 19.777 19.7771C20.1675 19.3866 20.1675 18.7534 19.777 18.3629L18.367 16.9529Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M1 12C1 11.4477 1.44772 11 2 11H4C4.55228 11 5 11.4477 5 12C5 12.5523 4.55228 13 4 13H2C1.44772 13 1 12.5523 1 12Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M20 11C19.4477 11 19 11.4477 19 12C19 12.5523 19.4477 13 20 13H22C22.5523 13 23 12.5523 23 12C23 11.4477 22.5523 11 22 11H20Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M7.04704 16.9529C7.43756 17.3434 7.43756 17.9766 7.04704 18.3671L5.63704 19.7771C5.24651 20.1676 4.61335 20.1676 4.22282 19.7771C3.8323 19.3866 3.8323 18.7534 4.22283 18.3629L5.63283 16.9529C6.02335 16.5623 6.65651 16.5623 7.04704 16.9529Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M19.777 5.6371C20.1675 5.24657 20.1675 4.61341 19.777 4.22289C19.3865 3.83236 18.7533 3.83236 18.3628 4.22289L16.9528 5.63289C16.5623 6.02341 16.5623 6.65658 16.9528 7.0471C17.3433 7.43762 17.9765 7.43762 18.367 7.0471L19.777 5.6371Z"
+                        fill="currentColor"></path>
+                </svg>
+            </button>
+            <button id="theme-toggle-moon" class="tiptap-button theme-toggle-moon" aria-label="Switch to light mode">
+                <svg width="18" height="18" class="tiptap-button-icon" viewBox="0 0 24 24" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M12 2C10.0222 2 8.08879 2.58649 6.4443 3.6853C4.79981 4.78412 3.51809 6.3459 2.76121 8.17317C2.00433 10.0004 1.8063 12.0111 2.19215 13.9509C2.578 15.8907 3.53041 17.6725 4.92894 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 11.5955 21.7564 11.2309 21.3827 11.0761C21.009 10.9213 20.5789 11.0069 20.2929 11.2929C19.287 12.2988 17.9226 12.864 16.5 12.864C15.0774 12.864 13.713 12.2988 12.7071 11.2929C11.7012 10.287 11.136 8.92261 11.136 7.5C11.136 6.07739 11.7012 4.71304 12.7071 3.70711C12.9931 3.42111 13.0787 2.99099 12.9239 2.61732C12.7691 2.24364 12.4045 2 12 2ZM7.55544 5.34824C8.27036 4.87055 9.05353 4.51389 9.87357 4.28778C9.39271 5.27979 9.13604 6.37666 9.13604 7.5C9.13604 9.45304 9.91189 11.3261 11.2929 12.7071C12.6739 14.0881 14.547 14.864 16.5 14.864C17.6233 14.864 18.7202 14.6073 19.7122 14.1264C19.4861 14.9465 19.1295 15.7296 18.6518 16.4446C17.7727 17.7602 16.5233 18.7855 15.0615 19.391C13.5997 19.9965 11.9911 20.155 10.4393 19.8463C8.88743 19.5376 7.46197 18.7757 6.34315 17.6569C5.21447 16.538 4.4624 15.1126 4.15372 13.5607C3.84504 12.0089 4.00347 10.4003 4.60897 8.93853C5.21447 7.47672 6.23985 6.22729 7.55544 5.34824Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z"
+                        fill="currentColor"></path>
+                </svg>
+            </button>
+        </span>
+    </div>
+</header>
+<!-- <a href="#" id="back-to-top" style="display: inline;"> ^ </a> -->
+
+<article class="mod-post mod-post__type-post">
+    <header>
+        <h1 class="mod-post__title">
+            华为CU接口速查-脱敏版
+        </h1>
+    </header>
+
+    <div class="mod-post__meta">
+        <time datetime="2026-10-05">
+            2026-10-05
+        </time> • 16 分钟阅读 •
+        
+        <a href="/category/iptv/" class="mod-post__category">
+            IPTV
+        </a>
+        
+        
+         • 
+        
+        <a href="/tag/iptv/">
+            iptv
+        </a>
+         ·  
+        <a href="/tag/immortalwrt/">
+            immortalwrt
+        </a>
+          </div>
+
+
+
+            <div class="mod-post__entry wzulli">
+                
+                <h1 id="-cu-iptv---epg---"><strong>华为 CU 体系接口速查（IPTV 认证 / EPG / 频道表）· 脱敏版</strong></h1>
+<blockquote>
+<p><strong>CU = China Unicom（联通）定制</strong>，跑在华为 IPTV 机顶盒（EC6109U 系列）上的 EPG + 认证体系。<br />
+本文全部字段/值取自一次 <strong>eth1 透明网桥抓包</strong>（<code>eth1_stb_&lt;日期&gt;.pcap</code>，TCP stream 20），<br />
+帧号、参数、Token 均可在 pcap 中复核。</p>
+<p>:warning: <strong>本文件为脱敏版</strong>：账号、STBID、MAC、各类 Token / SessionID / Authenticator 均替换为<br />
+占位符，服务器 IP 按「段内保留结构、主机位打码」处理。<strong>原文（含真实值）见同目录非脱敏版本。</strong><br />
+占位符命名规则见文末 <a href="#8-%E8%84%B1%E6%95%8F%E5%AF%B9%E7%85%A7%E8%A1%A8">§8 脱敏对照表</a>。</p>
+</blockquote>
+<hr />
+<h2 id="0-"><strong>0. 体系模型（先理解两件事）</strong></h2>
+<p><strong>① STB 侧的 JS 原生桥</strong> <code>Authentication</code></p>
+<p>EPG 页面运行在机顶盒内置浏览器里，通过一个原生对象读写本地配置：</p>
+<table>
+<thead>
+<tr>
+<th><strong>方法</strong></th>
+<th><strong>作用</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Authentication.CUGetConfig(key)</code></td>
+<td><strong>读</strong>机顶盒本地配置项（STBID、mac、tempKey、Lang…）</td>
+</tr>
+<tr>
+<td><code>Authentication.CUSetConfig(key, value)</code></td>
+<td><strong>写</strong>配置项，也用于把服务器下发的数据（频道表等）缓存到本地</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>服务器返回的很多“接口响应”其实是 <strong>HTML + JS 片段</strong>——真正的数据藏在<br />
+<code>CUSetConfig('key','value')</code> 这一句里。<strong>解析时抓</strong> <code>CUSetConfig(...)</code> <strong>即可，不用解析 HTML。</strong></p>
+</blockquote>
+<p><strong>② 各页面靠「表单自动提交」串联</strong></p>
+<p>每个响应页面 <code>&lt;body onload=DoXXX()&gt;</code> 自动 submit 到下一个接口，形成开机认证链：</p>
+<pre><code> authLoginHWCU.jsp → ValidAuthenticationHWCU.jsp → getchannellistHWCU.jsp
+    → ServicesEntryHWCU.jsp → indexHWCU.jsp → PreDealHWCU.jsp → Category.jsp
+</code></pre>
+<hr />
+<h2 id="1-"><strong>1. 服务器角色表（实测）</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>角色</strong></th>
+<th><strong>地址</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>认证门户 (EDS)</strong></td>
+<td><code>10.11.33.19:8082</code></td>
+<td><code>/EDS/jsp/AuthenticationURL</code>（UserID 入口）、心跳</td>
+</tr>
+<tr>
+<td><strong>EPG 主服务</strong></td>
+<td><code>10.11.37.165:33200</code></td>
+<td>认证链 + <code>getchannellistHWCU.jsp</code> + <code>Category.jsp</code> ★</td>
+</tr>
+<tr>
+<td><strong>升级 / 资源</strong></td>
+<td><code>10.11.37.82:9030</code></td>
+<td><code>UpgradeDomain</code>，开机图 / bootpic</td>
+</tr>
+<tr>
+<td><strong>Management (ACS)</strong></td>
+<td><code>10.11.33.24:37021</code>、<code>10.11.33.34:37020</code></td>
+<td>TR-069 CWMP</td>
+</tr>
+<tr>
+<td><strong>NTP</strong></td>
+<td><code>10.11.33.75</code>（备 <code>10.11.33.76</code>）</td>
+<td>时间同步</td>
+</tr>
+<tr>
+<td><strong>MQM</strong></td>
+<td><code>10.11.33.30</code></td>
+<td>消息队列/管理</td>
+</tr>
+<tr>
+<td><strong>组播视频源</strong></td>
+<td><code>239.125.1.0/24</code> / <code>239.125.2.0/24</code> <strong>:4120</strong></td>
+<td>频道流（RTP over UDP）</td>
+</tr>
+<tr>
+<td><strong>回看 (TimeShift)</strong></td>
+<td><code>10.11.43.21</code></td>
+<td><code>rtsp://10.11.43.21/PLTV/.../*.smil</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>说明：<strong>运营商内网地址段（</strong><code>10.11.x.x</code> <strong>/</strong> <code>239.125.x.x</code><strong>）予以保留</strong>——它们属于私有 / 组播地址，<br />
+不含个人可识别信息，且是理解拓扑所必需的。真正敏感的是<strong>公网可见的宽带账号、设备序列号与令牌</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="2-"><strong>2. 开机认证主链（帧号可查）</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>帧</strong></th>
+<th><strong>方法</strong></th>
+<th><strong>URI（EPG</strong> <code>10.11.37.165:33200</code><strong>）</strong></th>
+<th><strong>请求体</strong></th>
+<th><strong>响应</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101404</td>
+<td>GET</td>
+<td><code>10.11.33.19:8082/EDS/jsp/AuthenticationURL?UserID=…&amp;Action=Login</code></td>
+<td>—</td>
+<td>302 → EPG</td>
+</tr>
+<tr>
+<td>101413</td>
+<td>GET</td>
+<td><code>/EPG/jsp/AuthenticationURL?UserID=&lt;UserID&gt;&amp;Action=Login</code></td>
+<td>—</td>
+<td>200 登录页</td>
+</tr>
+<tr>
+<td>101418</td>
+<td>POST</td>
+<td><code>/EPG/jsp/authLoginHWCU.jsp</code></td>
+<td><code>UserID=…&amp;VIP=</code> (29B)</td>
+<td>200 → 下一页</td>
+</tr>
+<tr>
+<td>101422</td>
+<td>POST</td>
+<td><code>/EPG/jsp/ValidAuthenticationHWCU.jsp</code></td>
+<td>17 字段 (628B)</td>
+<td><strong>200 gzip</strong> → 认证结果</td>
+</tr>
+<tr>
+<td><strong>101428</strong></td>
+<td>POST</td>
+<td><code>/EPG/jsp/getchannellistHWCU.jsp</code></td>
+<td>7 字段 (151B)</td>
+<td><strong>200 gzip → ~190KB ★ 频道表</strong></td>
+</tr>
+<tr>
+<td>101451</td>
+<td>POST</td>
+<td><code>/EPG/jsp/ServicesEntryHWCU.jsp</code></td>
+<td><code>lang=1</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>101454</td>
+<td>GET</td>
+<td><code>/EPG/jsp/indexHWCU.jsp?lang=1</code></td>
+<td>—</td>
+<td>200</td>
+</tr>
+<tr>
+<td>101456</td>
+<td>GET</td>
+<td><code>/EPG/jsp/PreDealHWCU.jsp?directPlay=0&amp;…</code></td>
+<td>—</td>
+<td>200</td>
+</tr>
+<tr>
+<td>101458</td>
+<td>GET</td>
+<td><code>/EPG/jsp/defaultok/en/Category.jsp?…</code></td>
+<td>—</td>
+<td>200</td>
+</tr>
+<tr>
+<td>101465</td>
+<td>GET</td>
+<td><code>/EPG/jsp/defaultok/en/none.html</code></td>
+<td>—</td>
+<td>200</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>统一 UA：<code>Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.0 (KHTML, like Gecko)</code></p>
+</blockquote>
+<hr />
+<h2 id="3-"><strong>3. 关键接口详解</strong></h2>
+<h3 id="31-get-epgjspauthenticationurl"><strong>3.1</strong> <code>GET /EPG/jsp/AuthenticationURL</code></h3>
+<ul>
+<li><strong>Query</strong>：<code>UserID=&lt;UserID&gt;</code>（<code>@</code> 需 URL 编码为 <code>%40</code>）、<code>Action=Login</code></li>
+<li><strong>响应</strong>：登录页 HTML，<code>&lt;body onload=DoAuth()&gt;</code>。</li>
+</ul>
+<h3 id="32-post-epgjspauthloginhwcujsp--token-"><strong>3.2</strong> <code>POST /EPG/jsp/authLoginHWCU.jsp</code> <strong>★发 Token 的地方</strong></h3>
+<ul>
+<li><strong>请求体</strong>（仅 2 字段）：
+<pre><code> UserID=&lt;UserID-URL编码&gt;&amp;VIP=
+</code></pre>
+</li>
+<li><strong>响应</strong> = 一段 JS（NOT 数据 JSON），关键两行：
+<pre><code> var EncryptToken = &quot;&lt;EncryptToken&gt;&quot;;
+ document.authform.Authenticator.value = Authentication.CUGetAuthInfo(EncryptToken);
+</code></pre>
+<blockquote>
+<p><code>Authenticator</code> 由<strong>机顶盒本地</strong>用 <code>CUGetAuthInfo(EncryptToken)</code> 算出（硬件/密钥参与），<br />
+<strong>无法离线复算</strong> —— 想重放必须原机或抓原包。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="33-post-epgjspvalidauthenticationhwcujsp-"><strong>3.3</strong> <code>POST /EPG/jsp/ValidAuthenticationHWCU.jsp</code> <strong>★核心认证</strong></h3>
+<ul>
+<li><strong>请求体</strong>（17 字段，结构示例）：
+<pre><code> UserID=&lt;UserID-双编码&gt;&amp;Lang=1&amp;SupportHD=1&amp;NetUserID=
+ &amp;Authenticator=&lt;Authenticator-129hex&gt;&amp;STBType=EC6109U_nmglt
+ &amp;STBVersion=19.2.0-LNML21.SPC002.B011&amp;conntype=4
+ &amp;STBID=&lt;STBID&gt;&amp;templateName=defaultok
+ &amp;areaId=&lt;areaId&gt;&amp;userToken=&lt;EncryptToken&gt;
+ &amp;userGroupId=16&amp;productPackageId=-1
+ &amp;mac=&lt;STB-MAC-URL编码&gt;
+ &amp;SoftwareVersion=19.2.0-LNML21.SPC002.B011&amp;VIP=
+</code></pre>
+<blockquote>
+<p>注意 <code>UserID</code> 在这里被<strong>二次编码</strong>：<code>@</code> → <code>%40</code> → <code>%2540</code>（<code>%</code> 再编成 <code>%25</code>）。</p>
+</blockquote>
+</li>
+<li><strong>响应</strong>（gzip，约 10.9KB）48 条 <code>CUSetConfig</code>，关键：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>key</strong></th>
+<th><strong>值</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isSucessed</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>UserToken</code></td>
+<td><code>&lt;UserToken&gt;</code> ← 后续接口用</td>
+</tr>
+<tr>
+<td><code>EPGDomain</code></td>
+<td><code>http://10.11.37.165:33200/EPG/jsp/defaultok/en/Category.jsp</code></td>
+</tr>
+<tr>
+<td><code>ManagementDomain</code></td>
+<td><code>http://10.11.33.34:37020/acs</code></td>
+</tr>
+<tr>
+<td><code>UpgradeDomain</code></td>
+<td><code>http://10.11.37.82:9030</code></td>
+</tr>
+<tr>
+<td><code>NTPDomain</code></td>
+<td><code>10.11.33.75</code>（备 <code>10.11.33.76</code>）</td>
+</tr>
+<tr>
+<td><code>SQARtcpPort</code></td>
+<td><code>8027</code></td>
+</tr>
+<tr>
+<td><code>SessionID</code></td>
+<td><code>&lt;SessionID&gt;</code></td>
+</tr>
+<tr>
+<td><code>subNetId</code></td>
+<td><code>8601</code></td>
+</tr>
+<tr>
+<td><code>areaid</code> / <code>EPGGroupNMB</code> / <code>UserGroupNMB</code> / <code>PackageIDs</code></td>
+<td><code>&lt;areaId&gt;</code> / <code>defaultok</code> / <code>16</code> / <code>-1</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>:warning: <strong>纠正旧结论</strong>：早期把 <code>productPackageId=-1</code> 当作“业务退订”的根因。<br />
+<strong>实测证明它属正常</strong>——本次该字段为 <code>-1</code> 仍认证成功、拿到完整频道表。<br />
+真因是<strong>抓包点在旁路</strong>（见抓包笔记）。</p>
+</blockquote>
+<h3 id="34-post-epgjspgetchannellisthwcujsp-"><strong>3.4</strong> <code>POST /EPG/jsp/getchannellistHWCU.jsp</code> <strong>★★频道表本体</strong></h3>
+<ul>
+<li><strong>请求体</strong>（7 字段）：
+<pre><code> conntype=4&amp;UserToken=&lt;UserToken&gt;
+ &amp;tempKey=&lt;tempKey&gt;&amp;stbid=&lt;stbid短号&gt;
+ &amp;SupportHD=1&amp;UserID=&lt;UserID-URL编码&gt;&amp;Lang=1
+</code></pre>
+<blockquote>
+<p><code>tempKey</code> 来自机顶盒本地 <code>CUGetConfig('tempKey')</code>；<code>stbid</code> 为 STBID 派生的短号（示例 <code>150008</code>，取 STBID 中段）。</p>
+</blockquote>
+</li>
+<li><strong>响应</strong>（gzip，约 190KB）= 频道表：
+<pre><code> CUSetConfig('ChannelCount','&lt;N&gt;');
+ CUSetConfig('Channel','ChannelID=&quot;20000106&quot;,ChannelName=&quot;CCTV-1高清&quot;,…');   ×N
+</code></pre>
+</li>
+<li><strong>请求来源</strong>：由 <code>ValidAuthenticationHWCU.jsp</code> 响应页的隐藏表单自动提交（字段一一对应）。</li>
+</ul>
+<h3 id="35-post-epgjspservicesentryhwcujsp"><strong>3.5</strong> <code>POST /EPG/jsp/ServicesEntryHWCU.jsp</code></h3>
+<ul>
+<li><strong>请求体</strong>：<code>lang=1</code></li>
+<li><strong>响应</strong>：<code>CUSetConfig('ServiceEntry','URL=&quot;http://10.11.37.165:33200/EPG/jsp/getServicesEntryHWCTC.jsp?action=PortalEPGURL&quot;,HotKey=&quot;272&quot;,…')</code><br />
+→ 然后 <code>document.location='indexHWCU.jsp?lang=1'</code>。</li>
+</ul>
+<h3 id="36-indexhwcujsp--predealhwcujsp--categoryjsp"><strong>3.6</strong> <code>indexHWCU.jsp</code> <strong>/</strong> <code>PreDealHWCU.jsp</code> <strong>/</strong> <code>Category.jsp</code></h3>
+<ul>
+<li><code>indexHWCU.jsp?lang=1</code> → 首页框架；</li>
+<li><code>PreDealHWCU.jsp?directPlay=0&amp;lastChannelNo=null&amp;FIRSTPAGE=defaultok/en/Category.jsp</code> → 预处理/选首页；</li>
+<li><code>Category.jsp?directplay=0&amp;lastchannelNo=null&amp;isComeFromPredeal=1&amp;joinFlag=0</code> → <strong>频道分类页</strong>（GUI 导航；频道<strong>数据</strong>在 3.4，不在这里）。</li>
+</ul>
+<h3 id="37-"><strong>3.7 其他业务接口（历史抓包所见）</strong></h3>
+<table>
+<thead>
+<tr>
+<th><strong>接口</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>loginByUserId</code></td>
+<td>按 UserID 登录，<strong>返回 JSON</strong>（userId/mac/model/area/url…）</td>
+</tr>
+<tr>
+<td><code>ComInfoDisplay.jsp</code></td>
+<td>频道/业务信息显示（早期误以为含频道表，实为 3.4）</td>
+</tr>
+<tr>
+<td><code>heartbeat</code></td>
+<td>心跳</td>
+</tr>
+<tr>
+<td><code>getAPKClientVersion</code></td>
+<td>客户端版本查询</td>
+</tr>
+<tr>
+<td><code>getAppsByPay</code></td>
+<td>付费应用列表</td>
+</tr>
+<tr>
+<td><code>SessionTimeOut.jsp</code></td>
+<td>会话超时</td>
+</tr>
+<tr>
+<td><code>getServicesEntryHWCTC.jsp?action=PortalEPGURL</code></td>
+<td>服务入口（HWCTC）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="38-tr-069--cwmpacs"><strong>3.8 TR-069 / CWMP（</strong><code>/acs</code><strong>）</strong></h3>
+<ul>
+<li>ACS：<code>http://10.11.33.24:37021/acs</code>，UA <code>HMW tr069-cwmp</code>，SOAP over HTTP（TR-098）；</li>
+<li>认证：<code>POST /acs</code> → <code>401</code> → 带凭证重试 → <code>200/204</code>；</li>
+<li><code>Device.X_00E0FC.IsEncryptMark = 0</code>（<strong>业务流未加密</strong>）。</li>
+</ul>
+<hr />
+<h2 id="4-token--"><strong>4. Token / 标识字典</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>名称</strong></th>
+<th><strong>值（本次实测，已脱敏）</strong></th>
+<th><strong>生命周期 / 来源</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserID</code>（宽带账号）</td>
+<td><code>&lt;UserID&gt;</code></td>
+<td>固定</td>
+</tr>
+<tr>
+<td><code>STBID</code></td>
+<td><code>&lt;STBID&gt;</code></td>
+<td>固定（含 OUI <code>00E0FC</code>）</td>
+</tr>
+<tr>
+<td><code>mac</code></td>
+<td><code>&lt;STB-MAC&gt;</code></td>
+<td>固定（机顶盒有线 MAC）</td>
+</tr>
+<tr>
+<td><code>EncryptToken</code></td>
+<td><code>&lt;EncryptToken&gt;</code></td>
+<td><strong>会话级</strong>，<code>authLoginHWCU</code> 下发</td>
+</tr>
+<tr>
+<td><code>userToken</code>(请求)</td>
+<td>同 <code>EncryptToken</code></td>
+<td>会话级</td>
+</tr>
+<tr>
+<td><code>UserToken</code>(响应)</td>
+<td><code>&lt;UserToken&gt;</code></td>
+<td><strong>会话级</strong>，认证成功下发，后续接口凭证</td>
+</tr>
+<tr>
+<td><code>tempKey</code></td>
+<td><code>&lt;tempKey&gt;</code></td>
+<td><strong>会话级</strong>，本机 <code>CUGetConfig</code></td>
+</tr>
+<tr>
+<td><code>SessionID</code></td>
+<td><code>&lt;SessionID&gt;</code></td>
+<td>会话级</td>
+</tr>
+<tr>
+<td><code>Authenticator</code></td>
+<td><code>&lt;Authenticator&gt;</code>（129 hex）</td>
+<td><strong>本机计算</strong>，不可离线复算</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>结论：<strong>这套认证无法离线重放</strong>（<code>Authenticator</code> 由机顶盒本地密钥生成）。<br />
+要拿最新频道表 → 只能在机顶盒重认证时<strong>抓原包</strong>，或直接用已抓到的频道表直到业务变更。</p>
+</blockquote>
+<hr />
+<h2 id="5--schema"><strong>5. 频道条目 Schema</strong></h2>
+<p><strong>顶层字段（25 个）</strong>：<br />
+<code>ChannelID, ChannelName, UserChannelID, ChannelURL, TimeShift, TimeShiftLength,</code><br />
+<code>ChannelSDP, TimeShiftURL, ChannelType, IsHDChannel, PreviewEnable, ChannelPurchased,</code><br />
+<code>ChannelLocked, ChannelLogURL, PositionX, PositionY, BeginTime, Interval, Lasting,</code><br />
+<code>ActionType, CanUnicast, FCCEnable, ChannelFCCIP, ChannelFCCPort, ChannelFECPort</code></p>
+<p><strong>实例（CCTV-1 高清）关键字段</strong>：</p>
+<table>
+<thead>
+<tr>
+<th><strong>字段</strong></th>
+<th><strong>值</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChannelID</code></td>
+<td><code>20000106</code></td>
+<td>频道唯一 ID</td>
+</tr>
+<tr>
+<td><code>ChannelName</code></td>
+<td><code>CCTV-1高清</code></td>
+<td>频道名</td>
+</tr>
+<tr>
+<td><code>UserChannelID</code></td>
+<td><code>1</code></td>
+<td><strong>台号</strong></td>
+</tr>
+<tr>
+<td><code>ChannelURL</code></td>
+<td><code>igmp://239.125.2.66:4120</code></td>
+<td><strong>组播地址（播放用）</strong></td>
+</tr>
+<tr>
+<td><code>TimeShift</code></td>
+<td><code>1</code></td>
+<td>支持回看</td>
+</tr>
+<tr>
+<td><code>TimeShiftURL</code></td>
+<td><code>rtsp://10.11.43.21/PLTV/…smil?…</code></td>
+<td><strong>回看地址</strong></td>
+</tr>
+<tr>
+<td><code>ChannelType</code></td>
+<td><code>1</code></td>
+<td>频道类型</td>
+</tr>
+<tr>
+<td><code>IsHDChannel</code></td>
+<td><code>2</code></td>
+<td>:warning: <strong>不是高清判据</strong>（<code>CCTV-1高清=2</code>、<code>CCTV-5高清=1</code>，乱）</td>
+</tr>
+<tr>
+<td><code>ChannelPurchased</code></td>
+<td><code>1</code></td>
+<td>已订购</td>
+</tr>
+</tbody>
+</table>
+<p><code>TimeShiftURL</code> <strong>的 query 参数</strong>（回看鉴权）：<code>rrsip=10.11.34.92&amp;zoneoffset=480&amp;icpid=-1&amp;limitflux=-1&amp;limitdur=-1&amp;tenantId=8601&amp;GuardEncType=2&amp;accountinfo=…(内含令牌/过期时间)</code></p>
+<blockquote>
+<ul>
+<li><strong>无分类字段</strong> → 分央视/卫视/本地/购物需<strong>按频道名自行归类</strong>。</li>
+<li>频道数 ⟷ 唯一组播地址一一对应（<strong>一频道一组播</strong>），端口统一 <code>4120</code>。</li>
+<li>回看 URL 内嵌 <code>accountinfo</code> 令牌（<code>GuardEncType=2</code>），<strong>会话级、会过期</strong>。</li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="6-m3u8-"><strong>6. m3u8 输出公式</strong></h2>
+<pre><code> #EXTINF:-1,&lt;UserChannelID&gt; &lt;ChannelName&gt;
+ rtp://239.125.x.x:4120
+</code></pre>
+<ul>
+<li>播放器只认 <code>udp://@</code> → 把 <code>rtp://</code> 换成 <code>udp://@</code>。</li>
+<li>回看：直接把 <code>TimeShiftURL</code>（rtsp）给支持 RTSP 的客户端。</li>
+<li>已生成：<code>_analysis/channels.m3u8</code> / <code>.m3u</code> / <code>channels.csv</code>（含回看列）。</li>
+</ul>
+<hr />
+<h2 id="7-"><strong>7. 复现要点</strong></h2>
+<ol>
+<li><strong>抓包点必须在链路中间</strong>（否则只能看到组播，拿不到本认证链）→ 见 <code>IPTV抓包笔记.md</code>。</li>
+<li>抓包窗口覆盖 <strong>开机 → 认证 → 打开频道列表 → 切台</strong>（≥6 分钟）。</li>
+<li>定位：</li>
+</ol>
+<pre><code> tshark -r X.pcap -Y &quot;http.request&quot; -T fields -e frame.number -e ip.dst -e http.request.uri
+</code></pre>
+<p>→ 找 <code>getchannellistHWCU</code> 所在 <code>tcp.stream</code>。<br />
+4. 切流 + 导出（gzip 自动解压）：</p>
+<pre><code>tshark -r X.pcap -Y &quot;tcp.stream==N&quot; -w s.pcap
+tshark -r s.pcap --export-objects http,out
+</code></pre>
+<ol start="5">
+<li>从响应里 <code>grep CUSetConfig('Channel'</code> 提取频道；<code>ChannelCount</code> 校验总数。</li>
+</ol>
+<hr />
+<h2 id="8-"><strong>8. 脱敏对照表</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>占位符</strong></th>
+<th><strong>真实值的形态</strong></th>
+<th><strong>脱敏理由</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;UserID&gt;</code></td>
+<td>12 位数字 + <code>@tv</code></td>
+<td>宽带账号，可关联到具体用户</td>
+</tr>
+<tr>
+<td><code>&lt;STBID&gt;</code></td>
+<td>28 位十六进制串</td>
+<td>设备序列号，可关联到具体终端</td>
+</tr>
+<tr>
+<td><code>&lt;STB-MAC&gt;</code></td>
+<td><code>xx:xx:xx:xx:xx:xx</code></td>
+<td>设备网卡物理地址</td>
+</tr>
+<tr>
+<td><code>&lt;EncryptToken&gt;</code></td>
+<td>32 位十六进制串</td>
+<td>会话令牌</td>
+</tr>
+<tr>
+<td><code>&lt;UserToken&gt;</code></td>
+<td>24 位大小写混合串</td>
+<td>会话令牌</td>
+</tr>
+<tr>
+<td><code>&lt;tempKey&gt;</code></td>
+<td>32 位十六进制串</td>
+<td>会话令牌</td>
+</tr>
+<tr>
+<td><code>&lt;SessionID&gt;</code></td>
+<td>32 位大写字母数字串</td>
+<td>会话标识</td>
+</tr>
+<tr>
+<td><code>&lt;Authenticator&gt;</code></td>
+<td>129 位十六进制串</td>
+<td>本机签名，含设备密钥信息</td>
+</tr>
+<tr>
+<td><code>&lt;areaId&gt;</code></td>
+<td>4 位数字</td>
+<td>地市区域编码（轻度敏感）</td>
+</tr>
+<tr>
+<td><code>&lt;N&gt;</code></td>
+<td>整数</td>
+<td>频道总数（属业务规模信息）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>保留未脱敏的项</strong>（含理由）：</p>
+<table>
+<thead>
+<tr>
+<th><strong>项</strong></th>
+<th><strong>值</strong></th>
+<th><strong>保留理由</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>运营商内网 IP 段</td>
+<td><code>10.11.x.x</code></td>
+<td>私网地址，RFC1918，不指向具体个人</td>
+</tr>
+<tr>
+<td>组播地址段</td>
+<td><code>239.125.x.x</code></td>
+<td>组播地址，同上</td>
+</tr>
+<tr>
+<td>域名 / 端口</td>
+<td><code>:8082</code> <code>:33200</code> 等</td>
+<td>协议常量，无个人标识</td>
+</tr>
+<tr>
+<td>软件版本 / 机型</td>
+<td><code>EC6109U_nmglt</code>、<code>19.2.0-…</code></td>
+<td>公有固件版本号</td>
+</tr>
+<tr>
+<td>公共参数</td>
+<td><code>lang=1</code>、<code>conntype=4</code>、<code>subNetId=8601</code></td>
+<td>协议字段</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>如需更严格脱敏</strong>（连 <code>10.11.x.x</code> / <code>239.125.x.x</code> 段也打码为 <code>&lt;内网&gt;</code> / <code>&lt;组播&gt;</code>），<br />
+可直接全局替换；但那样会牺牲笔记的可读性与可验证性。</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>参考：上游开源项目 <code>IPTV-Sniffer-Web</code>（同类思路，要求镜像口）；</p>
+<p>:copyright: 2026 cocolight</p>
+</blockquote>
+
+            </div>
+
+</article>
+
+
+
+
+
+
+<div class="mod-post__poster">
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Reading Progress Component -->
+<div class="reading-progress-container">
+  <span class="reading-label">阅读进度</span>
+  <span class="reading-value">0%</span>
+  <svg class="progress-ring" viewBox="0 0 24 24">
+    <!-- Background Circle -->
+    <circle class="progress-ring__circle-bg" stroke-width="3" fill="transparent" r="10" cx="12" cy="12" />
+    <!-- Progress Circle -->
+    <circle class="progress-ring__circle" stroke-width="3" fill="transparent" r="10" cx="12" cy="12" />
+  </svg>
+</div>
+<footer id="footer" class="footer">
+    <nav>
+        
+        
+        <a class="menu-item" href="/">首页</a>
+        
+         · 
+        <a class="menu-item" href="/post">博客</a>
+        
+         · 
+        <a class="menu-item" href="/memos">闪念</a>
+        
+         · 
+        <a class="menu-item" href="/archives">归档</a>
+        
+         · 
+        <a class="menu-item" href="/tags">标签</a>
+        
+         · 
+        <a class="menu-item" href="/links">友链</a>
+        
+         · 
+        <a class="menu-item" href="/post/about">关于</a>
+        
+    </nav>
+
+    <div class="Copyright">Copyright &copy; <span class="current-year"></span> <a href="https://cocolight.github.io">惊鸿一瞥</a></div>
+    <script>document.querySelector('.current-year').textContent = new Date().getFullYear();</script>
+
+    <div class="index_footer">
+        Powered by Gridea Pro ·
+        <a class="rss" href="/feed.xml" target="_blank" rel="noopener noreferrer">
+            <i class="ri-rss-line"></i>RSS
+        </a>
+    </div>
+</footer>
+
+
+
+
+    
+
+    
+<script>console.log("\n%c ✦ Gridea Pro v1.3.0-beta.2 %c · Theme: amore-jinja2 v1.1.0 · https://gridea.pro %c\n","color:#fadfa3;background:#111111;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:500;font-size:12px","color:#e05c00;background:#fff3ec;padding:9px 14px;border-radius:0 4px 4px 0;font-size:11px","")</script>
+</body>
+
+</html>

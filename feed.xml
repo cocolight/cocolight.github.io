@@ -6,8 +6,20 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Sun, 04 Oct 2026 19:02:29 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2026 23:27:49 +0800</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>immortalwrt 门户</title>
+      <link>https://cocolight.github.io/post/immortalwrt-men-hu/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/immortalwrt-men-hu/</guid>
+      <pubDate>Wed, 07 Oct 2026 07:26:13 +0800</pubDate>
+      <description><![CDATA[<p><a href="https://github.com/wrttools/luci-app-portal">https://github.com/wrttools/luci-app-portal</a></p>
+<p><img src="https://cocolight.github.io/post-images/1791300410220677400.png" alt="" /></p>
+<p><img src="https://cocolight.github.io/post-images/1791300421095837100.png" alt="" /></p>
+<p>![](/post-images/17913&hellip;</p>
+]]></description>
+      <category>immortalwrt</category>
+    </item>
     <item>
       <title>IPTV 机顶盒流量抓取与分析 —— 专业笔记</title>
       <link>https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/</link>

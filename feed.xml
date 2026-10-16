@@ -6,8 +6,25 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Tue, 06 Oct 2026 23:27:49 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 17 Oct 2026 03:31:44 +0000</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>Dolphin 白底白字（白屏）修复笔记</title>
+      <link>https://cocolight.github.io/post/dolphin-bai-di-bai-zibai-pingxiu-fu-bi-ji/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/dolphin-bai-di-bai-zibai-pingxiu-fu-bi-ji/</guid>
+      <pubDate>Sat, 17 Oct 2026 03:31:44 +0000</pubDate>
+      <description><![CDATA[<blockquote>
+<p><strong>背景</strong>：在主账户 <code>aliha</code> 装完 KOS 后，深色模式下 Dolphin 出现「背景白 + 文字白」——几乎不可读。这是 KOS 与 KDE 原生外观系统耦合出的真实坑，记下根因与已验证可走的修复步骤。</p>
+</blockquote>
+<h3 id="heading">根因（两套外观系统不同步）</h3>
+<ol>
+<li><strong>KDE 全局配色方案</strong>（<code>~/.config/kdeglobals</code> 的 <code>ColorScheme</code>）被推成了 **Breeze&hellip;</li>
+</ol>
+]]></description>
+      <category>dolphin</category>
+      <category>gedora</category>
+      <category>linux</category>
+    </item>
     <item>
       <title>immortalwrt 门户</title>
       <link>https://cocolight.github.io/post/immortalwrt-men-hu/</link>

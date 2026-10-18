@@ -6,8 +6,41 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Fri, 16 Oct 2026 22:07:01 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2026 03:21:54 +0000</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>Fedora 44 KDE注册图标</title>
+      <link>https://cocolight.github.io/post/fedora-44-kdezhu-ce-tu-biao/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/fedora-44-kdezhu-ce-tu-biao/</guid>
+      <pubDate>Mon, 19 Oct 2026 03:21:54 +0000</pubDate>
+      <description><![CDATA[<p>安装的二进制软件，没有自动注册图标和打开方式，按以下方式修复：</p>
+<h2 id="5--tar---">5. 给二进制 tar 包注册桌面启动项 + 默认打开方式</h2>
+<h3 id="51-">5.1 写启动项文件</h3>
+<p>写到用户级目录（免 sudo）：<code>~/.local/share/applications/&lt;app&gt;.desktop</code></p>
+<pre><code>[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Ty...
+</code></pre>
+]]></description>
+      <category>linux</category>
+    </item>
+    <item>
+      <title>QQ 最小化/全屏后颜色「高曝光」过曝</title>
+      <link>https://cocolight.github.io/post/qq-zui-xiao-huaquan-ping-hou-yan-segao-pu-guang-guo-pu/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/qq-zui-xiao-huaquan-ping-hou-yan-segao-pu-guang-guo-pu/</guid>
+      <pubDate>Sun, 18 Oct 2026 20:45:42 +0000</pubDate>
+      <description><![CDATA[<blockquote>
+<p>现象：QQ（Linux NT 版，Electron/Chromium 内核）最小化后再全屏、或窗口状态切换后， 画面整体变得「高曝光」、偏亮、过饱和（washed out / tinted light / over-saturated）。 这是<strong>应用与合成器的色彩管理交互 bug</strong>，<strong>不是显示器或硬件故障</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="heading">一、根因（已查实）</h2>
+<p>这是 **Chromium/Elec&hellip;</p>
+]]></description>
+      <category>linux</category>
+      <category>qq</category>
+      <category>electron</category>
+    </item>
     <item>
       <title>Dolphin 白底白字（白屏）修复笔记</title>
       <link>https://cocolight.github.io/post/dolphin-bai-di-bai-zibai-pingxiu-fu-bi-ji/</link>

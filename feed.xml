@@ -6,8 +6,25 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Fri, 16 Oct 2026 22:07:01 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 19:21:54 +0000</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <item>
+      <title>Fedora 44 KDE注册图标</title>
+      <link>https://cocolight.github.io/post/fedora-44-kdezhu-ce-tu-biao/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/fedora-44-kdezhu-ce-tu-biao/</guid>
+      <pubDate>Sun, 18 Oct 2026 19:21:54 +0000</pubDate>
+      <description><![CDATA[<p>安装的二进制软件，没有自动注册图标和打开方式，按以下方式修复：</p>
+<h2 id="5--tar---">5. 给二进制 tar 包注册桌面启动项 + 默认打开方式</h2>
+<h3 id="51-">5.1 写启动项文件</h3>
+<p>写到用户级目录（免 sudo）：<code>~/.local/share/applications/&lt;app&gt;.desktop</code></p>
+<pre><code>[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Ty...
+</code></pre>
+]]></description>
+      <category>linux</category>
+    </item>
     <item>
       <title>Dolphin 白底白字（白屏）修复笔记</title>
       <link>https://cocolight.github.io/post/dolphin-bai-di-bai-zibai-pingxiu-fu-bi-ji/</link>

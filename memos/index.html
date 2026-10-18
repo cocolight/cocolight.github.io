@@ -182,58 +182,62 @@
 </script>
 
 <script>
-    // Reading Progress Component
+    // Reading Progress Component: 页面顶部细线
     document.addEventListener('DOMContentLoaded', () => {
-        const progressValue = document.querySelector('.reading-value');
-        const progressCircle = document.querySelector('.progress-ring__circle');
-        const container = document.querySelector('.reading-progress-container');
+        const bar = document.querySelector('.reading-progress-bar');
+        const fill = document.querySelector('.reading-progress-bar__fill');
 
         // Exit if elements don't exist (e.g., not on a post page)
-        if (!progressValue || !progressCircle || !container) {
+        if (!bar || !fill) {
             return;
         }
 
-        // SVG Circle setup
-        const radius = progressCircle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius;
+        let ticking = false;
+        let lastRatio = -1;
 
-        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-        progressCircle.style.strokeDashoffset = circumference;
-
-        function setProgress(percent) {
-            const safePercent = Math.min(100, Math.max(0, percent));
-            progressValue.textContent = `${Math.round(safePercent)}%`;
-            const offset = circumference - (safePercent / 100) * circumference;
-            progressCircle.style.strokeDashoffset = offset;
+        function setProgress(ratio) {
+            const safeRatio = Math.min(1, Math.max(0, ratio));
+            if (Math.abs(safeRatio - lastRatio) < 0.001) {
+                return;
+            }
+            lastRatio = safeRatio;
+            // 用 scaleX 表示进度：走 GPU 合成，不触发重排（比改 width 性能好）
+            fill.style.transform = `scaleX(${safeRatio})`;
+            bar.setAttribute('aria-valuenow', String(Math.round(safeRatio * 100)));
         }
 
-        function onScroll() {
-            const scrollTop = window.scrollY || document.documentElement.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        function update() {
+            const scrollEl = document.scrollingElement || document.documentElement;
+            const scrollTop = scrollEl.scrollTop;
+            const scrollable = scrollEl.scrollHeight - window.innerHeight;
 
-            if (scrollHeight <= 0) {
+            if (scrollable <= 0) {
+                // 内容不足一屏：无可滚动距离，进度恒为 0
                 setProgress(0);
                 return;
             }
 
-            const scrollPercent = (scrollTop / scrollHeight) * 100;
-            setProgress(scrollPercent);
+            setProgress(scrollTop / scrollable);
+        }
 
-            // Show/Hide logic: Show if scrolled more than 100px
-            if (scrollTop > 100) {
-                container.classList.add('show');
-            } else {
-                container.classList.remove('show');
+        function onScroll() {
+            if (ticking) {
+                return;
             }
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                update();
+                ticking = false;
+            });
         }
 
         // Initialize
-        onScroll();
+        update();
 
         // Listen for scroll events
         window.addEventListener('scroll', onScroll, { passive: true });
 
-        // Recalculate on resize
+        // Recalculate on resize (viewport height changes the scrollable range)
         window.addEventListener('resize', onScroll);
     });
 </script>
@@ -499,96 +503,213 @@
     <div class="mod-post__entry wzulli">
 
         
-        <p class="memos-empty">暂无闪念</p>
+
+        <!-- 热力图 -->
+        <div class="heatmap-wrap">
+            <div id="heatmap-root"></div>
+            <div class="heatmap-footer">
+                <span id="heatmap-total"></span>
+                <div class="heatmap-legend">
+                    <span>少</span>
+                    <span class="heatmap-legend-cell" style="background:#ebedf0;"></span>
+                    <span class="heatmap-legend-cell" style="background:#9be9a8;"></span>
+                    <span class="heatmap-legend-cell" style="background:#40c463;"></span>
+                    <span class="heatmap-legend-cell" style="background:#28df99;"></span>
+                    <span class="heatmap-legend-cell" style="background:#1a9f6b;"></span>
+                    <span>多</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 闪念列表 -->
+        <div class="memos-list">
+            
+            <div class="memo-item " data-created="2026-10-18">
+                <div class="memo-body">
+                    <div class="memo-content">
+                        <p>今天终于有时间把博客修一修啦</p>
+
+                    </div>
+                </div>
+                
+                <div class="memo-meta">
+                    <time>2026-10-18</time>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- 分页控件 -->
+        <div class="memo-pagination" id="memo-pagination">
+            <a href="javascript:void(0);" id="memo-prev-btn" class="disabled" onclick="memoPrevPage()">←
+                上一页</a>
+            <span class="memo-page-info" id="memo-page-info"></span>
+            <a href="javascript:void(0);" id="memo-next-btn" onclick="memoNextPage()">下一页 →</a>
+        </div>
+
+        <script>
+            (function () {
+                var MEMO_PER_PAGE = 20;
+                var currentPage = 1;
+                var items = document.querySelectorAll('.memo-item');
+                var totalItems = items.length;
+                var totalPages = Math.ceil(totalItems / MEMO_PER_PAGE);
+
+                // 初始化内容折叠
+                items.forEach(function (item) {
+                    var body = item.querySelector('.memo-body');
+                    var content = item.querySelector('.memo-content');
+                    if (content && content.scrollHeight > 160) {
+                        body.classList.add('collapsed');
+                        var btn = document.createElement('button');
+                        btn.className = 'memo-expand-btn';
+                        btn.style.display = 'inline';
+                        btn.textContent = '展开全文 ▼';
+                        btn.onclick = function () {
+                            if (body.classList.contains('collapsed')) {
+                                body.style.maxHeight = content.scrollHeight + 'px';
+                                body.classList.remove('collapsed');
+                                btn.textContent = '收起 ▲';
+                            } else {
+                                body.style.maxHeight = '160px';
+                                body.classList.add('collapsed');
+                                btn.textContent = '展开全文 ▼';
+                            }
+                        };
+                        body.parentNode.insertBefore(btn, body.nextSibling);
+                    }
+                });
+
+                // ======= GitHub 风格热力图 =======
+                var heatmapData = {};
+                items.forEach(function (item) {
+                    var d = item.getAttribute('data-created');
+                    if (d) {
+                        var dateStr = d.substring(0, 10);
+                        heatmapData[dateStr] = (heatmapData[dateStr] || 0) + 1;
+                    }
+                });
+
+                var COLORS = ['#ebedf0', '#9be9a8', '#40c463', '#28df99', '#1a9f6b'];
+                var MONTHS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                var DAYS = ['日', '一', '二', '三', '四', '五', '六'];
+
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+                var endDay = today.getDay();
+                var totalDays = 52 * 7 + endDay + 1;
+                var startDate = new Date(today);
+                startDate.setDate(startDate.getDate() - totalDays + 1);
+                startDate.setDate(startDate.getDate() - startDate.getDay());
+
+                var totalWeeks = Math.ceil(totalDays / 7);
+
+                var weeks = [];
+                for (var w = 0; w < totalWeeks; w++) {
+                    var week = [];
+                    for (var d = 0; d < 7; d++) {
+                        var cellDate = new Date(startDate);
+                        cellDate.setDate(cellDate.getDate() + w * 7 + d);
+                        var key = cellDate.getFullYear() + '-' + String(cellDate.getMonth() + 1).padStart(2, '0') + '-' + String(cellDate.getDate()).padStart(2, '0');
+                        var count = heatmapData[key] || 0;
+                        var level = count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4;
+                        var future = cellDate > today;
+                        week.push({ date: cellDate, key: key, count: count, level: level, future: future, month: cellDate.getMonth(), dayOfMonth: cellDate.getDate() });
+                    }
+                    weeks.push(week);
+                }
+
+                var monthLabels = [];
+                var lastMonth = -1;
+                for (var w = 0; w < weeks.length; w++) {
+                    var firstDay = weeks[w][0];
+                    if (!firstDay.future && firstDay.month !== lastMonth) {
+                        monthLabels.push({ weekIndex: w, label: MONTHS[firstDay.month] });
+                        lastMonth = firstDay.month;
+                    }
+                }
+
+                var html = '<table style="min-width: 600px;">';
+
+                html += '<tr><td class="heatmap-day-label"></td>';
+                var monthColIdx = 0;
+                for (var w = 0; w < totalWeeks; w++) {
+                    if (monthColIdx < monthLabels.length && monthLabels[monthColIdx].weekIndex === w) {
+                        var nextIdx = monthColIdx + 1 < monthLabels.length ? monthLabels[monthColIdx + 1].weekIndex : totalWeeks;
+                        var span = nextIdx - w;
+                        html += '<td colspan="' + span + '" class="heatmap-month-label">' + monthLabels[monthColIdx].label + '</td>';
+                        w += span - 1;
+                        monthColIdx++;
+                    } else {
+                        html += '<td class="heatmap-month-label"></td>';
+                    }
+                }
+                html += '</tr>';
+
+                for (var d = 0; d < 7; d++) {
+                    html += '<tr>';
+                    html += '<td class="heatmap-day-label">' + DAYS[d] + '</td>';
+                    for (var w = 0; w < weeks.length; w++) {
+                        var c = weeks[w][d];
+                        if (c.future) {
+                            html += '<td></td>';
+                        } else {
+                            html += '<td class="cell" data-level="' + c.level + '" style="background:' + COLORS[c.level] + ';" title="' + c.key + ': ' + c.count + ' 条闪念"></td>';
+                        }
+                    }
+                    html += '</tr>';
+                }
+
+                html += '</table>';
+                var root = document.getElementById('heatmap-root');
+                root.innerHTML = html;
+                document.getElementById('heatmap-total').textContent = '过去一年共 ' + totalItems + ' 条闪念';
+
+                setTimeout(function () {
+                    var wrap = document.querySelector('.heatmap-wrap');
+                    if (wrap) {
+                        wrap.scrollLeft = wrap.scrollWidth;
+                    }
+                }, 100);
+
+                // ======= 分页 =======
+                function updatePagination() {
+                    for (var i = 0; i < items.length; i++) {
+                        var start = (currentPage - 1) * MEMO_PER_PAGE;
+                        var end = currentPage * MEMO_PER_PAGE;
+                        if (i >= start && i < end) {
+                            items[i].classList.remove('memo-hide');
+                        } else {
+                            items[i].classList.add('memo-hide');
+                        }
+                    }
+                    var prevBtn = document.getElementById('memo-prev-btn');
+                    var nextBtn = document.getElementById('memo-next-btn');
+                    var pageInfo = document.getElementById('memo-page-info');
+
+                    prevBtn.className = currentPage <= 1 ? 'disabled' : '';
+                    nextBtn.className = currentPage >= totalPages ? 'disabled' : '';
+                    pageInfo.textContent = currentPage + ' / ' + totalPages;
+
+                    if (totalPages <= 1) {
+                        document.getElementById('memo-pagination').style.display = 'none';
+                    }
+                }
+
+                window.memoNextPage = function () {
+                    if (currentPage < totalPages) { currentPage++; updatePagination(); window.scrollTo(0, 0); }
+                };
+                window.memoPrevPage = function () {
+                    if (currentPage > 1) { currentPage--; updatePagination(); window.scrollTo(0, 0); }
+                };
+
+                updatePagination();
+            })();
+        </script>
+
         
 
     </div>
-
-    
-
-
-
-<div id="giscus-container">
-<script>
-  (function () {
-    var cfg = 'follow';
-    var theme;
-    if (cfg === 'light') {
-      theme = 'light';
-    } else if (cfg === 'dark') {
-      theme = 'dark';
-    } else {
-      theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-    }
-    window.__giscusTheme = theme;
-  })();
-</script>
-<script src="https://giscus.app/client.js"
-        id="giscus-script"
-        data-repo="cocolight/cocolight.github.io"
-        data-repo-id="R_kgDOUsUnaw"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOUsUna84DG3ay"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="light"
-        data-lang="zh-CN"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-</script>
-</div>
-<script>
-  (function () {
-    var s = document.getElementById('giscus-script');
-    if (s && window.__giscusTheme) {
-      s.setAttribute('data-theme', window.__giscusTheme);
-    }
-    var applyGiscusTheme = function () {
-      var cfg = 'follow';
-      var theme;
-      if (cfg === 'light') theme = 'light';
-      else if (cfg === 'dark') theme = 'dark';
-      else theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-      var iframe = document.querySelector('iframe.giscus-frame');
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: theme } } }, 'https://giscus.app');
-      }
-    };
-    var observer = new MutationObserver(applyGiscusTheme);
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  })();
-</script>
-<script>
-  /* JS 防御：监听 #giscus-container 尺寸与 iframe 注入，
-     若 iframe 实际宽度超出容器则强制拉回 100%，并在 console 输出尺寸便于排查。 */
-  (function () {
-    var container = document.getElementById('giscus-container');
-    if (!container || !window.ResizeObserver) return;
-    var fixWidth = function () {
-      var iframe = container.querySelector('iframe.giscus-frame');
-      if (!iframe) return;
-      var cw = container.clientWidth;
-      var iw = iframe.clientWidth;
-      if (iw > cw + 1) {
-        iframe.style.setProperty('width', '100%', 'important');
-        iframe.style.setProperty('max-width', '100%', 'important');
-      }
-      console.log('[amore-plus/giscus] container width:', cw, 'iframe width:', iw);
-    };
-    var ro = new ResizeObserver(fixWidth);
-    ro.observe(container);
-    var mo = new MutationObserver(fixWidth);
-    mo.observe(container, { childList: true, subtree: true });
-  })();
-</script>
-
-
-
-
 
 </article>
 

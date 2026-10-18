@@ -84,6 +84,26 @@ Name=Ty...
       <category>immortalwrt</category>
     </item>
     <item>
+      <title>IPTV 机顶盒流量抓取与分析 —— 专业笔记</title>
+      <link>https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/</guid>
+      <pubDate>Mon, 05 Oct 2026 11:01:04 +0000</pubDate>
+      <description><![CDATA[<blockquote>
+<p>面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线，<br />
+把可复用的方法论与项目专属细节分开陈述。</p>
+<p>实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。<br />
+文中凭据、令牌、账号已脱敏。</p>
+<p>:copyright: 2026 cocolight</p>
+</blockquote>
+<hr />
+<h2 id="heading"><strong>一、目标与验收标准</strong></h2>
+<h3 id="11-"><strong>1.1 目标</strong></h3>
+<p>**从&hellip;</p>
+]]></description>
+      <category>iptv</category>
+      <category>immortalwrt</category>
+    </item>
+    <item>
       <title>华为CU接口速查-脱敏版</title>
       <link>https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/</link>
       <guid isPermaLink="true">https://cocolight.github.io/post/hua-wei-cujie-kou-su-cha-tuo-min-ban/</guid>

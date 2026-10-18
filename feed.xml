@@ -43,6 +43,19 @@ Name=Ty...
       <category>linux</category>
     </item>
     <item>
+      <title>Github安装Codebuddy-Connector</title>
+      <link>https://cocolight.github.io/post/githuban-zhuang-codebuddy-connector/</link>
+      <guid isPermaLink="true">https://cocolight.github.io/post/githuban-zhuang-codebuddy-connector/</guid>
+      <pubDate>Wed, 14 Oct 2026 21:33:08 +0000</pubDate>
+      <description><![CDATA[<ol>
+<li>在workbuddy连接器选择GIthub,打开授权窗口后找到CodeBuddy-Connector</li>
+<li>找不到访问这个网址可以直达：[https://github.com/apps/codebuddy-connector/installations/select_target](<a href="https://github.com/apps/codebuddy-connector/installatio">https://github.com/apps/codebuddy-connector/installatio</a>&hellip;</li>
+</ol>
+]]></description>
+      <category>github</category>
+      <category>ai</category>
+    </item>
+    <item>
       <title>immortalwrt 门户</title>
       <link>https://cocolight.github.io/post/immortalwrt-men-hu/</link>
       <guid isPermaLink="true">https://cocolight.github.io/post/immortalwrt-men-hu/</guid>

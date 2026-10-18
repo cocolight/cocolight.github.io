@@ -6,13 +6,13 @@
     <description>欢迎来到我的空间</description>
     <language>zh-cn</language>
     <generator>Gridea Pro</generator>
-    <lastBuildDate>Mon, 19 Oct 2026 03:21:54 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 20:45:40 +0800</lastBuildDate>
     <atom:link href="https://cocolight.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <item>
       <title>Fedora 44 KDE注册图标</title>
       <link>https://cocolight.github.io/post/fedora-44-kdezhu-ce-tu-biao/</link>
       <guid isPermaLink="true">https://cocolight.github.io/post/fedora-44-kdezhu-ce-tu-biao/</guid>
-      <pubDate>Mon, 19 Oct 2026 03:21:54 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2026 03:21:54 +0800</pubDate>
       <description><![CDATA[<p>安装的二进制软件，没有自动注册图标和打开方式，按以下方式修复：</p>
 <h2 id="5--tar---">5. 给二进制 tar 包注册桌面启动项 + 默认打开方式</h2>
 <h3 id="51-">5.1 写启动项文件</h3>
@@ -29,7 +29,7 @@ Name=Ty...
       <title>QQ 最小化/全屏后颜色「高曝光」过曝</title>
       <link>https://cocolight.github.io/post/qq-zui-xiao-huaquan-ping-hou-yan-segao-pu-guang-guo-pu/</link>
       <guid isPermaLink="true">https://cocolight.github.io/post/qq-zui-xiao-huaquan-ping-hou-yan-segao-pu-guang-guo-pu/</guid>
-      <pubDate>Sun, 18 Oct 2026 20:45:42 +0000</pubDate>
+      <pubDate>Sun, 18 Oct 2026 20:45:42 +0800</pubDate>
       <description><![CDATA[<blockquote>
 <p>现象：QQ（Linux NT 版，Electron/Chromium 内核）最小化后再全屏、或窗口状态切换后， 画面整体变得「高曝光」、偏亮、过饱和（washed out / tinted light / over-saturated）。 这是<strong>应用与合成器的色彩管理交互 bug</strong>，<strong>不是显示器或硬件故障</strong>。</p>
 </blockquote>
@@ -81,26 +81,6 @@ Name=Ty...
 <p><img src="https://cocolight.github.io/post-images/1791300421095837100.png" alt="" /></p>
 <p>![](/post-images/17913&hellip;</p>
 ]]></description>
-      <category>immortalwrt</category>
-    </item>
-    <item>
-      <title>IPTV 机顶盒流量抓取与分析 —— 专业笔记</title>
-      <link>https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/</link>
-      <guid isPermaLink="true">https://cocolight.github.io/post/iptv-ji-ding-he-liu-liang-zhua-qu-yu-fen-xi-zhuan-ye-bi-ji/</guid>
-      <pubDate>Mon, 05 Oct 2026 03:01:04 +0800</pubDate>
-      <description><![CDATA[<blockquote>
-<p>面向任何从事 IPTV 抓包 / 协议分析的人。以一次完整的实战为主线，<br />
-把可复用的方法论与项目专属细节分开陈述。</p>
-<p>实战环境：联通 IPTV + 华为机顶盒 + x86 软路由（OpenWrt 系）。<br />
-文中凭据、令牌、账号已脱敏。</p>
-<p>:copyright: 2026 cocolight</p>
-</blockquote>
-<hr />
-<h2 id="heading"><strong>一、目标与验收标准</strong></h2>
-<h3 id="11-"><strong>1.1 目标</strong></h3>
-<p>**从&hellip;</p>
-]]></description>
-      <category>iptv</category>
       <category>immortalwrt</category>
     </item>
     <item>

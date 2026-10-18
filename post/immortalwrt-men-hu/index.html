@@ -407,7 +407,7 @@
 
 
 
-<div id="giscus-container"></div>
+<div id="giscus-container">
 <script>
   (function () {
     var cfg = 'follow';
@@ -439,6 +439,7 @@
         crossorigin="anonymous"
         async>
 </script>
+</div>
 <script>
   (function () {
     var s = document.getElementById('giscus-script');
@@ -458,6 +459,29 @@
     };
     var observer = new MutationObserver(applyGiscusTheme);
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  })();
+</script>
+<script>
+  /* JS 防御：监听 #giscus-container 尺寸与 iframe 注入，
+     若 iframe 实际宽度超出容器则强制拉回 100%，并在 console 输出尺寸便于排查。 */
+  (function () {
+    var container = document.getElementById('giscus-container');
+    if (!container || !window.ResizeObserver) return;
+    var fixWidth = function () {
+      var iframe = container.querySelector('iframe.giscus-frame');
+      if (!iframe) return;
+      var cw = container.clientWidth;
+      var iw = iframe.clientWidth;
+      if (iw > cw + 1) {
+        iframe.style.setProperty('width', '100%', 'important');
+        iframe.style.setProperty('max-width', '100%', 'important');
+      }
+      console.log('[amore-plus/giscus] container width:', cw, 'iframe width:', iw);
+    };
+    var ro = new ResizeObserver(fixWidth);
+    ro.observe(container);
+    var mo = new MutationObserver(fixWidth);
+    mo.observe(container, { childList: true, subtree: true });
   })();
 </script>
 
